@@ -4,6 +4,6 @@ module.exports = {
 	execute(message) {
 		const serverQueue = message.client.queue.get(message.guild.id);
 		if (!serverQueue) return message.channel.send('There is nothing playing.');
-		return message.channel.send(`Now playing: ${serverQueue.songs[0].title}`);
+		return message.channel.send(`:monkey_face: :musical_note: Now playing: ${serverQueue.songs[0].title}`);
 	},
 };

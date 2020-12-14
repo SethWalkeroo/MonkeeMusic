@@ -1,4 +1,6 @@
 const ytdl = require('ytdl-core');
+const ytsr = require('ytsr');
+const config = require('../config.json')
 
 module.exports = {
 	name: 'play',
@@ -22,19 +24,40 @@ module.exports = {
 				);
 			}
 
-			const songInfo = await ytdl.getInfo(args[1]);
+			// Setting the video id to default as the second argument (#[command] being the first argument).
+			let videoId = args[1];
+
+			// Gets url of first search result from a query if user does not provide a url.	
+			if (!videoId.startsWith('https://')) {
+				let query = ''
+				if (args.length > 2) {
+					for (word of args) {
+						if (!word.startsWith(config.prefix)) {
+							query += word + ' ';
+						}
+					} 
+				} else {
+					query = args[1]
+				}
+				const results = await ytsr(query, {limit: 1, pages: 1});
+				videoId = await results.items[0].id;
+			}
+
+			// Grabs information about the video provided in the url.
+			const songInfo = await ytdl.getInfo(videoId);
 			const song = {
 				title: songInfo.videoDetails.title,
 				url: songInfo.videoDetails.video_url
 			};
 
+			// Construct the serverQueue if it does not already exist. 
 			if (!serverQueue) {
 				const queueContruct = {
 					textChannel: message.channel,
 					voiceChannel: voiceChannel,
 					connection: null,
 					songs: [],
-					volume: 100,
+					volume: 5,
 					playing: true
 				};
 
@@ -75,14 +98,14 @@ module.exports = {
 		}
 
 		const dispatcher = serverQueue.connection
-			.play(ytdl(song.url))
+			.play(ytdl(song.url), {bitrate: 512})
 			.on('finish', () => {
 				serverQueue.songs.shift();
 				this.play(message, serverQueue.songs[0]);
 			})
 			.on('error', error => console.error(error));
 
-		dispatcher.setVolumeLogarithmic(serverQueue.volume / 100);
-		serverQueue.textChannel.send(`:monkey_face: Start playing: **${song.title}**`);
+		dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
+		serverQueue.textChannel.send(`:monkey_face: :musical_note: Start playing: **${song.title}**`);
 	}
 };

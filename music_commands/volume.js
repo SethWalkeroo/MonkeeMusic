@@ -1,6 +1,6 @@
 module.exports = {
 	name: 'volume',
-	description: 'Change the server wide volume of the bot on a scale of 0 to 200.',
+	description: 'Change the server wide volume of the bot on a scale of 0 to 10.',
 	execute(message, args) {
 		const serverQueue = message.client.queue.get(message.guild.id);
 		if (!message.member.voice.channel) return message.channel.send('You have to be in a voice channel to change the bot volume!');
@@ -9,11 +9,11 @@ module.exports = {
 
 		if (isNaN(amount)) {
 			return message.reply('That doesn\'t seem to be a valid number.');
-		} else if (amount < 0 || amount > 200) {
-			return message.reply('You need to input a decimal value between 0 and 5.');
+		} else if (amount < 0 || amount > 10) {
+			return message.reply('You need to input a decimal value between 0 and 10.');
 		}
 
 		serverQueue.volume = amount;
-		serverQueue.connection.dispatcher.setVolumeLogarithmic(serverQueue.volume / 100);
+		serverQueue.connection.dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
 	},
 };
