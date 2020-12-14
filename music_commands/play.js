@@ -1,24 +1,24 @@
-const ytdl = require("ytdl-core");
+const ytdl = require('ytdl-core');
 
 module.exports = {
-	name: "play",
-	description: "Play a song in your channel!",
+	name: 'play',
+	description: 'Play a song in your channel!',
 	async execute(message) {
 		try {
-			const args = message.content.split(" ");
+			const args = message.content.split(' ');
 			const queue = message.client.queue;
 			const serverQueue = message.client.queue.get(message.guild.id);
 
 			const voiceChannel = message.member.voice.channel;
 			if (!voiceChannel)
 				return message.channel.send(
-					"You need to be in a voice channel to play music!"
+					'You need to be in a voice channel to play music!'
 				);
 			
 			const permissions = voiceChannel.permissionsFor(message.client.user);
-			if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) {
+			if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
 				return message.channel.send(
-					"I need the permissions to join and speak in your voice channel!"
+					'I need the permissions to join and speak in your voice channel!'
 				);
 			}
 
@@ -34,7 +34,7 @@ module.exports = {
 					voiceChannel: voiceChannel,
 					connection: null,
 					songs: [],
-					volume: 5,
+					volume: 100,
 					playing: true
 				};
 
@@ -76,12 +76,13 @@ module.exports = {
 
 		const dispatcher = serverQueue.connection
 			.play(ytdl(song.url))
-			.on("finish", () => {
+			.on('finish', () => {
 				serverQueue.songs.shift();
 				this.play(message, serverQueue.songs[0]);
 			})
-			.on("error", error => console.error(error));
-		dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
-		serverQueue.textChannel.send(`Start playing: **${song.title}**`);
+			.on('error', error => console.error(error));
+
+		dispatcher.setVolumeLogarithmic(serverQueue.volume / 100);
+		serverQueue.textChannel.send(`:monkey_face: Start playing: **${song.title}**`);
 	}
 };

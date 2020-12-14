@@ -7,7 +7,7 @@ module.exports = {
 	description: 'List all available commands.',
 	execute(message) {
 		let commands = [];
-		const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+		const commandFiles = fs.readdirSync('./music_commands').filter(file => file.endsWith('.js'));
 
 		for (const file of commandFiles) {
 			const command = require(`./${file}`);
@@ -15,7 +15,7 @@ module.exports = {
 		}
 
 		const helpEmbed = new Discord.MessageEmbed()
-			.setColor('#0099ff')
+			.setColor('#f0f03c')
 			.setTitle('All MonkeeBot Commands! :monkey_face:')
 
 		for (const command of commands) {
