@@ -1,19 +1,28 @@
 const fs = require('fs')
+const Discord = require('discord.js')
 const config = require('../config.json')
 
 module.exports = {
 	name: 'help',
 	description: 'List all available commands.',
 	execute(message) {
-		let str = '';
+		let commands = [];
 		const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
 		for (const file of commandFiles) {
 			const command = require(`./${file}`);
-			str += `**${config.prefix}${command.name}** **-->** _${command.description}_\n`;
+			commands.push(`**${config.prefix}${command.name}  --**  ${command.description}`);
 		}
 
-		message.channel.send('Here is a list of all the available bot commands and their functions!\n');
-		message.channel.send(str);
+		const helpEmbed = new Discord.MessageEmbed()
+			.setColor('#0099ff')
+			.setTitle('All MonkeeBot Commands! :monkey_face:')
+
+		for (const command of commands) {
+			helpEmbed.addField(name=command, value='\u2800', inline=false);
+		}
+
+		message.channel.send(helpEmbed);
 	},
+
 };
