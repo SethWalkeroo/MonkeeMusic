@@ -4,7 +4,7 @@ const ytsr = require('ytsr');
 const ytdl = require('ytdl-core');
 const playlistLimit = 25;
 const songLimit = 250;
-const supportDiscord = '(Support discord does not exist yet)';
+const supportDiscord = 'https://discord.gg/z7uq2rh7bQ';
 
 
 module.exports = {
