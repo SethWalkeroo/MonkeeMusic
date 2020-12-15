@@ -25,6 +25,10 @@ module.exports = {
 				);
 			}
 
+			if (!args[1]) {
+				return message.reply('Please enter an argument for the play command.');
+			}
+
 			// check for the playlist command
 			const playlistSongs = [];
 			let chosenPlaylist;

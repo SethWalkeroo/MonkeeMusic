@@ -3,33 +3,33 @@ const config = require('../config.json');
 const ytsr = require('ytsr');
 const ytdl = require('ytdl-core');
 
-const playlistsLocation = '../MonkeeMusic/music_data/playlists.json';
-let data = fs.readFileSync(playlistsLocation);
-let playlists = JSON.parse(data);
 
 module.exports = {
 	name: 'playlists',
 	description: 'Create a new playlist or add to an existing one.',
 	execute(message, args) {
+		let playlistsLocation = `../MonkeeMusic/music_data/playlists.json`;
+		let rawData = fs.readFileSync(playlistsLocation);
+		let playlists = JSON.parse(rawData);
 		const command = args[0];
 		switch (command) {
 			case 'create':
-				playlists_create(message, args);
+				playlists_create(message, playlists, playlistsLocation, args);
 				break;
 			case 'add':
-				playlists_add(message, args);
+				playlists_add(message, playlists, playlistsLocation, args);
 				break;
 			case 'show':
-				playlists_show(message, args);
+				playlists_show(message, playlists, playlistsLocation, args);
 				break;
 			case 'remove':
-				playlists_remove(message, args);
+				playlists_remove(message, playlists, playlistsLocation, args);
 				break;
 			case 'all':
-				playlists_all(message, args);
+				playlists_all(message, playlists, args);
 				break;
 			case 'delete':
-				playlists_delete(message, args);
+				playlists_delete(message, playlists, playlistsLocation, args);
 				break;
 			default:
 				message.reply('Invalid playlist command.');
@@ -37,7 +37,7 @@ module.exports = {
 	},
 };
 
-async function playlists_add(message, args) {
+async function playlists_add(message, playlists, playlistsLocation, args) {
 	if (!args[1]) {
 		message.reply('Please specify which playlist you want to add the song to.');
 	} else {
@@ -77,7 +77,7 @@ async function playlists_add(message, args) {
 	}
 }
 
-function playlists_create(message, args) {
+function playlists_create(message, playlists, playlistsLocation, args) {
 	if (!args[1]) {
 		message.reply('Please provide a name when creating a playlist!');
 	} else if (args.length > 2) {
@@ -85,6 +85,7 @@ function playlists_create(message, args) {
 	} else {
 		playlistName = args[1];
 		playlists[`${playlistName}`] = [];
+
 		let data = JSON.stringify(playlists, null, 2);
 		fs.writeFile(playlistsLocation, data, (err) => {
 		    if (err) throw err;
@@ -93,7 +94,7 @@ function playlists_create(message, args) {
 	}
 }
 
-function playlists_show(message, args) {
+function playlists_show(message, playlists, playlistsLocation, args) {
 	const playlistName = args[1];
 	const songs = playlists[`${playlistName}`];
 	if (!songs) {
@@ -108,7 +109,7 @@ function playlists_show(message, args) {
 	message.channel.send(results);
 }
 
-function playlists_remove(message, args) {
+function playlists_remove(message, playlists, playlistsLocation, args) {
 	const playlistName = args[1];
 	const songPosition = parseInt(args[2] - 1);
 	let songs = playlists[`${playlistName}`];
@@ -137,9 +138,7 @@ function playlists_remove(message, args) {
 	});
 }
 
-function playlists_all(message, args) {;
-	let data = fs.readFileSync(playlistsLocation);
-	let playlists = JSON.parse(data);
+function playlists_all(message, playlists, args) {
 	if (JSON.stringify(playlists) === '{}') {
 		return message.reply('There are currently no playlists created for this server.');
 	}
@@ -152,7 +151,7 @@ function playlists_all(message, args) {;
 	message.channel.send(result);
 }
 
-function playlists_delete(message, args) {
+function playlists_delete(message, playlists, playlistsLocation, args) {
 	const playlistName = args[1];
 	for (playlist in playlists) {
 		if (playlist === playlistName) {
