@@ -1,7 +1,7 @@
 const fs = require('fs')
 const Discord = require('discord.js');
 const Client = require('./client/Client');
-const prefix = require('./config.json');
+const prefix = require('./config.json').prefix;
 const env = require('dotenv').config();
 const token = process.env.TOKEN;
 

@@ -47,31 +47,31 @@ module.exports = {
 			}
 			console.log(playlistSongs);
 
+			let videoId = args[1];
 			if (!playlistSongs.length) {
 				// Setting the video id to default as the second argument (#[command] being the first argument).
-				let videoId = args[1];
 				// Gets url of first search result from a query if user does not provide a url.	
 				if (!videoId.startsWith('https://')) {
-					let query = ''
+					let query = [];
 					if (args.length > 2) {
-						for (word of args) {
-							if (!word.startsWith(config.prefix)) {
-								query += word + ' ';
-							}
-						} 
+						query = args.slice(1, args.length + 1).join([' ']); 
 					} else {
-						query = args[1]
+						query = args[2];
 					}
+					console.log(query);
 					const results = await ytsr(query, {limit: 1, pages: 1});
-					videoId = await results.items[0].id;
+					if (!results.items.length) {
+						return message.reply('Sorry, I could not find a result matching that query! :worried:');
+					}
+					videoId = results.items[0].id;
 				}
-				// Grabs information about the video provided in the url.
-				const songInfo = await ytdl.getInfo(videoId);
-				const song = {
-					title: songInfo.videoDetails.title,
-					url: songInfo.videoDetails.video_url
-				};
 			}
+
+			const songInfo = await ytdl.getInfo(videoId);
+			const song = {
+				title: songInfo.videoDetails.title,
+				url: songInfo.videoDetails.video_url
+			};
 
 			// Construct the serverQueue if it does not already exist. 
 			if (!serverQueue) {
@@ -86,7 +86,7 @@ module.exports = {
 
 				await queue.set(message.guild.id, queueConstruct);
 				if (!playlistSongs.length) {
-					queueContruct.songs.push(song);
+					queueConstruct.songs.push(song);
 				} else {
 					queueConstruct.songs = queueConstruct.songs.concat(playlistSongs);
 				}
