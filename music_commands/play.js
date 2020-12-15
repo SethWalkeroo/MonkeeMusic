@@ -2,7 +2,7 @@ const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
 const fs = require('fs');
 const config = require('../config.json');
-const queueLimit = 1;
+const queueLimit = 250;
 
 module.exports = {
 	name: 'play',
@@ -12,25 +12,23 @@ module.exports = {
 	cooldown: 3,
 	async execute(message) {
 		try {
+			
 			const args = message.content.split(' ');
 			const queue = message.client.queue;
 			const serverQueue = message.client.queue.get(message.guild.id);
-
 			const voiceChannel = message.member.voice.channel;
-			if (!voiceChannel)
-				return message.channel.send(
-					'You need to be in a voice channel to play music!'
-				);
+
+			if (!voiceChannel) {
+				return message.channel.send('You need to be in a voice channel to play music!');
+			}
 			
 			const permissions = voiceChannel.permissionsFor(message.client.user);
 			if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
-				return message.channel.send(
-					'I need the permissions to join and speak in your voice channel!'
-				);
+				return message.channel.send('I need the permissions to join and speak in your voice channel!');
 			}
 
 			if (!args[1]) {
-				return message.reply('Please enter an argument for the play command.');
+				return message.reply('Please enter an argument for the play command!');
 			}
 
 			// check for the playlist command
@@ -41,7 +39,7 @@ module.exports = {
 				const data = await fs.readFileSync(playlistsLocation);
 				const playlists = await JSON.parse(data);
 				if (!args[2]) {
-					return message.reply('Please specify which playlist you would like to add.');
+					return message.reply('Please specify which playlist you would like to add!');
 				}
 				for (playlist in playlists) {
 					if (args[2] === playlist) {
@@ -111,14 +109,14 @@ module.exports = {
 				}
 			} else {
 				if (serverQueue.songs.length >= queueLimit) {
-					return message.reply(`You have reached the maximum number of songs to have in queue (**${queueLimit}**)`);
+					return message.reply(`You have reached the maximum number of songs to have in queue (**${queueLimit}**) :worried:`);
 				}
 				if (!playlistSongs.length) {
 					serverQueue.songs.push(song);
-					return message.channel.send(`${song.title} has been added to the queue!`);
+					return message.channel.send(`$**{song.title}** has been added to the queue! :monkey_face: :thumbup:`);
 				} else {
 					serverQueue.songs = serverQueue.songs.concat(playlistSongs);
-					return message.channel.send(`The ${args[2]} playlist has been added to the queue!`);
+					return message.channel.send(`The **${args[2]}** playlist has been added to the queue! :monkey_face: :thumbup:`);
 				}
 
 			}
