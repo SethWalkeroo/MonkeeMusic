@@ -4,7 +4,7 @@
 </p>
 
 <h1 align="center">MonkeeMusic</h1>
-A monkey themed Discord music bot. 
+<p align="center">A monkey themed Discord music bot. (for no reason)</p>
 
 # Commands
 
