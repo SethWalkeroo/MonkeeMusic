@@ -20,7 +20,7 @@ A monkey themed Discord music bot.
 # Playlist Commands
 
 | Command | Usage | Description |
-| ------- | ------------------------------ | ----------------------------- |
+| ------- | ---------- | ----------- |
 | playlists create | #playlists create [playlist name] | create a new playlist for the server. (max 25) |
 | playlists delete | #playlists delete [playlist name] | delete a playlist from the server. |
 | playlists add | #playlists add [playlist name] [link or query (song name)] | add a song to a specified playlist. |
