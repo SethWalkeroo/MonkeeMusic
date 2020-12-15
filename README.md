@@ -1,3 +1,8 @@
+<p align="center">
+    <img src="/images/q.png" alt="Quiet Text logo" width="72" height="72">
+  </a>
+</p>
+
 # MonkeeMusic
 A monkey themed Discord music bot. 
 
