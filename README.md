@@ -8,7 +8,7 @@ A monkey themed Discord music bot.
 | clean | #clean [number of messages] | clear messages from the text channel. |
 | clear | #clear | clear all songs from the current queue. |
 | help | #help | display a list of commands and their descriptions. |
-| nowplaying | #nowplaying | display the song that is currently playing. |
+| playing | #playing | display the song that is currently playing. |
 | play | #play [link or query (song name)] | play a specified song in the bot. |
 | play (playlists) | #play [playlist] [playlist name] | play one of the custom playlists through the bot |
 | pause | #pause | pause the song that is currently playing. |

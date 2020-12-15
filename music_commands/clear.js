@@ -1,6 +1,7 @@
 module.exports = {
 	name: 'clear',
 	description: 'Clear all the songs from the current queue.',
+	usage: '#clear',
 	guildOnly: true,
 	cooldown: 3,
 	execute(message) {

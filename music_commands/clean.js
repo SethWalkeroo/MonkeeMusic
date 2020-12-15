@@ -1,6 +1,7 @@
 module.exports = {
 	name: 'clean',
 	description: 'Clear text channel of unwanted messages.',
+	usage: '#clean [number of messages]',
 	guildOnly: true,
 	cooldown: 3,
 	execute(message, args) {

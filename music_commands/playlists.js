@@ -10,6 +10,7 @@ const supportDiscord = '(Support discord does not exist yet)';
 module.exports = {
 	name: 'playlists',
 	description: 'Create a new playlist or add to an existing one.',
+	usage: '#playlists [command]',
 	guildOnly: true,
 	cooldown: 2,
 	async execute(message, args) {

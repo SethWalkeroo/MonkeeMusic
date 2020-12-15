@@ -1,6 +1,7 @@
 module.exports = {
-	name: 'nowplaying',
+	name: 'playing',
 	description: 'Get the song that is playing.',
+	usage: '#playing',
 	guildOnly: true,
 	cooldown: 2,
 	execute(message) {

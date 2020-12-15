@@ -1,6 +1,7 @@
 module.exports = {
 	name: 'skip',
 	description: 'Skip a song playing in the queue.',
+	usage: '#skip',
 	guildOnly: true,
 	cooldown: 2,
 	execute(message) {
