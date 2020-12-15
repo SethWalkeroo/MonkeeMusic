@@ -1,9 +1,9 @@
 <p align="center">
-    <img src="monk.png" alt="Monkey Picture" width="300" height="300">
+    <img src="monk.png" alt="Monkey Picture" width="200" height="200">
   </a>
 </p>
 
-# MonkeeMusic
+<h1 align="center">MonkeeMusic</h1>
 A monkey themed Discord music bot. 
 
 # Commands
