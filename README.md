@@ -5,6 +5,7 @@
 
 <h1 align="center">MonkeeMusic</h1>
 <p align="center">A monkey themed Discord music bot. (for no reason)</p>
+<p align="center">Invite him to your server today: https://discord.com/api/oauth2/authorize?client_id=786887384620859392&permissions=8&scope=bot </p>
 
 # Commands
 
