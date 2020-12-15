@@ -6,9 +6,10 @@
 <h1 align="center">MonkeeMusic</h1>
 <p align="center">A monkey themed Discord music bot. (for no reason)</p>
 <p align="center">Invite him to your server today: https://discord.com/api/oauth2/authorize?client_id=786887384620859392&permissions=8&scope=bot </p>
+<br>
+<br>
 
-
-<h2 align="center">Commands</h2>
+# Commands
 
 | Command | Usage | Description |
 | ------- | ---------- | ----------- |
@@ -24,7 +25,7 @@
 | stop | #stop | stop the audio stream and clear the queue. |
 | volume | #volume [value between 0 and 10] | adjust the channel wide volume of the bot. |
 
-<h2 align="center">Playlist Commands</h2>
+# Playlist Commands
 
 | Command | Usage | Description |
 | ------- | ---------- | ----------- |
