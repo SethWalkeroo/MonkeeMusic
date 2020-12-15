@@ -1,6 +1,8 @@
 module.exports = {
 	name: 'volume',
 	description: 'Change the server wide volume of the bot on a scale of 0 to 10.',
+	guildOnly: true,
+	cooldown: 3,
 	execute(message, args) {
 		const serverQueue = message.client.queue.get(message.guild.id);
 		if (!message.member.voice.channel) return message.channel.send('You have to be in a voice channel to change the bot volume!');

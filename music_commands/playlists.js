@@ -2,15 +2,20 @@ const fs = require('fs');
 const config = require('../config.json');
 const ytsr = require('ytsr');
 const ytdl = require('ytdl-core');
+const playlistLimit = 25;
+const songLimit = 250;
+const supportDiscord = '(Support discord does not exist yet)';
 
 
 module.exports = {
 	name: 'playlists',
 	description: 'Create a new playlist or add to an existing one.',
-	execute(message, args) {
-		let playlistsLocation = `../MonkeeMusic/music_data/playlists.json`;
-		let rawData = fs.readFileSync(playlistsLocation);
-		let playlists = JSON.parse(rawData);
+	guildOnly: true,
+	cooldown: 2,
+	async execute(message, args) {
+		const playlistsLocation = `../MonkeeMusic/music_data/${message.guild.id}.json`;
+		let rawData = await fs.readFileSync(playlistsLocation);
+		let playlists = await JSON.parse(rawData);
 		const command = args[0];
 		switch (command) {
 			case 'create':
@@ -41,10 +46,28 @@ async function playlists_add(message, playlists, playlistsLocation, args) {
 	if (!args[1]) {
 		message.reply('Please specify which playlist you want to add the song to.');
 	} else {
-		let playlistName = args[1];
 		let videoId = args[2];
 		if (!videoId) {
 			return message.reply('Please make sure to specify a song to add to the playlist.');
+		}
+
+		let playlistName = null;
+		for (playlist in playlists) {
+			if (playlist === args[1]) {
+				playlistName = args[1]
+				break;
+			}
+		}
+		if (!playlistName) {
+			return message.reply('Sorry, that playlist doesn\'t seem to exist.');
+		}
+
+		if (playlists[`${playlistName}`].length >= songLimit) {
+			return message.channel.send(
+`You have reached the song limit of **${songLimit}** for the **${playlistName}** playlist!
+ If you actually need more songs for your playlist, join the support discord **${supportDiscord}** for help.
+ Or you can contact me via email at **sethrobertwalker@gmail.com**`
+			);
 		}
 
 		// Gets url of first search result from a query if user does not provide a url.	
@@ -68,16 +91,28 @@ async function playlists_add(message, playlists, playlistsLocation, args) {
 			url: songInfo.videoDetails.video_url,
 			position: songPosition
 		};
-		await playlists[`${playlistName}`].push(song);
+		playlists[`${playlistName}`].push(song);
 		let data = JSON.stringify(playlists, null, 2);
-		fs.writeFile(playlistsLocation, data, (err) => {
+		await fs.writeFile(playlistsLocation, data, (err) => {
 		    if (err) throw err;
 		    message.reply(`**${song.title}** has been added to the ${playlistName} playlist!`);
 		});
 	}
 }
 
-function playlists_create(message, playlists, playlistsLocation, args) {
+async function playlists_create(message, playlists, playlistsLocation, args) {
+	let count = 0;
+	for (playlist in playlists) {
+		count += 1;
+	}
+	if (count >= playlistLimit) {
+		return message.channel.send(
+`This server has reached the playlist limit of **${playlistLimit}**
+ If you actually need more playlists join the support discord **${supportDiscord}** for help.
+ You can also contact me via email at **sethrobertwalker@gmail.com**`
+		);
+	}
+
 	if (!args[1]) {
 		message.reply('Please provide a name when creating a playlist!');
 	} else if (args.length > 2) {
@@ -85,9 +120,9 @@ function playlists_create(message, playlists, playlistsLocation, args) {
 	} else {
 		playlistName = args[1];
 		playlists[`${playlistName}`] = [];
-
+		console.log(playlistsLocation);
 		let data = JSON.stringify(playlists, null, 2);
-		fs.writeFile(playlistsLocation, data, (err) => {
+		await fs.writeFile(playlistsLocation, data, (err) => {
 		    if (err) throw err;
 		    message.reply(`Playlist "**${playlistName}**" has been successfully created!`);
 		});
@@ -109,7 +144,7 @@ function playlists_show(message, playlists, playlistsLocation, args) {
 	message.channel.send(results);
 }
 
-function playlists_remove(message, playlists, playlistsLocation, args) {
+async function playlists_remove(message, playlists, playlistsLocation, args) {
 	const playlistName = args[1];
 	const songPosition = parseInt(args[2] - 1);
 	let songs = playlists[`${playlistName}`];
@@ -132,7 +167,7 @@ function playlists_remove(message, playlists, playlistsLocation, args) {
 	}
 	playlists[`${playlistName}`] = cleanedPlaylist;
 	songs = JSON.stringify(playlists, null, 2);
-	fs.writeFile(playlistsLocation, songs, (err) => {
+	await fs.writeFile(playlistsLocation, songs, (err) => {
 		if (err) throw err;
 		message.reply(`Song at position **${songPosition + 1}** has been removed from the **${playlistName}** playlist! :thumbup:`);
 	});
@@ -151,7 +186,7 @@ function playlists_all(message, playlists, args) {
 	message.channel.send(result);
 }
 
-function playlists_delete(message, playlists, playlistsLocation, args) {
+async function playlists_delete(message, playlists, playlistsLocation, args) {
 	const playlistName = args[1];
 	for (playlist in playlists) {
 		if (playlist === playlistName) {
@@ -160,7 +195,7 @@ function playlists_delete(message, playlists, playlistsLocation, args) {
 		}
 	}
 	playlists = JSON.stringify(playlists, null, 2);
-	fs.writeFile(playlistsLocation, playlists, (err) => {
+	await fs.writeFile(playlistsLocation, playlists, (err) => {
 		if (err) throw err;
 		message.channel.send(`The ${playlistName} playlist has been deleted! :thumbup:`);
 	});

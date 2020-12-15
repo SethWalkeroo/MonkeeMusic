@@ -1,6 +1,8 @@
 module.exports = {
 	name: 'clean',
 	description: 'Clear text channel of unwanted messages.',
+	guildOnly: true,
+	cooldown: 3,
 	execute(message, args) {
 		const amount = parseInt(args[0]) + 1;
 

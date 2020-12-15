@@ -2,10 +2,13 @@ const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
 const fs = require('fs');
 const config = require('../config.json');
+const queueLimit = 1;
 
 module.exports = {
 	name: 'play',
 	description: 'Play a song in your channel!',
+	guildOnly: true,
+	cooldown: 3,
 	async execute(message) {
 		try {
 			const args = message.content.split(' ');
@@ -48,8 +51,9 @@ module.exports = {
 				for (song of chosenPlaylist) {
 					playlistSongs.push(song);
 				}
+				console.log(`someone tried to get the playlist: "${playlistSongs}"`);
 			}
-			console.log(playlistSongs);
+
 
 			let videoId = args[1];
 			if (!playlistSongs.length) {
@@ -60,9 +64,9 @@ module.exports = {
 					if (args.length > 2) {
 						query = args.slice(1, args.length + 1).join([' ']); 
 					} else {
-						query = args[2];
+						query = args[1];
 					}
-					console.log(query);
+					console.log(`Someone tried to query "${query}"`);
 					const results = await ytsr(query, {limit: 1, pages: 1});
 					if (!results.items.length) {
 						return message.reply('Sorry, I could not find a result matching that query! :worried:');
@@ -105,6 +109,9 @@ module.exports = {
 					return message.channel.send(err);
 				}
 			} else {
+				if (serverQueue.songs.length >= queueLimit) {
+					return message.reply(`You have reached the maximum number of songs to have in queue (**${queueLimit}**)`);
+				}
 				if (!playlistSongs.length) {
 					serverQueue.songs.push(song);
 					return message.channel.send(`${song.title} has been added to the queue!`);

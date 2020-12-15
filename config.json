@@ -1,4 +1,5 @@
 {
 	"prefix": "#",
-	"token": "This is not the token you're looking for"
+	"token": "",
+	"playlistLocation": "../music_data/playlists.json"
 }

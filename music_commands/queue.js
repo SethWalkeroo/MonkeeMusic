@@ -1,6 +1,8 @@
 module.exports = {
 	name: 'queue',
 	description: 'Display all of the songs in the current queue.',
+	guildOnly: true,
+	cooldown: 2,
 	execute(message) {
 		const serverQueue = message.client.queue.get(message.guild.id)
 		if (!serverQueue) {
