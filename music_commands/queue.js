@@ -5,6 +5,8 @@ module.exports = {
 		const serverQueue = message.client.queue.get(message.guild.id)
 		if (!serverQueue) {
 			return message.channel.send('There are no songs in queue at the moment.');
+		} else if (!serverQueue.songs.length) {
+			return message.channel.send('There are no songs in queue at the moment.');
 		}
 		let result = ''
 		let count = 1

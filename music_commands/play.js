@@ -1,6 +1,7 @@
 const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
-const config = require('../config.json')
+const fs = require('fs');
+const config = require('../config.json');
 
 module.exports = {
 	name: 'play',
@@ -24,35 +25,57 @@ module.exports = {
 				);
 			}
 
-			// Setting the video id to default as the second argument (#[command] being the first argument).
-			let videoId = args[1];
-
-			// Gets url of first search result from a query if user does not provide a url.	
-			if (!videoId.startsWith('https://')) {
-				let query = ''
-				if (args.length > 2) {
-					for (word of args) {
-						if (!word.startsWith(config.prefix)) {
-							query += word + ' ';
-						}
-					} 
-				} else {
-					query = args[1]
+			// check for the playlist command
+			const playlistSongs = [];
+			let chosenPlaylist;
+			if (args[1] === 'playlist') {
+				const playlistsLocation = '../MonkeeMusic/music_data/playlists.json';
+				const data = await fs.readFileSync(playlistsLocation);
+				const playlists = await JSON.parse(data);
+				if (!args[2]) {
+					return message.reply('Please specify which playlist you would like to add.');
 				}
-				const results = await ytsr(query, {limit: 1, pages: 1});
-				videoId = await results.items[0].id;
+				for (playlist in playlists) {
+					if (args[2] === playlist) {
+						chosenPlaylist = playlists[`${playlist}`];
+						break;
+					}
+				}
+				for (song of chosenPlaylist) {
+					playlistSongs.push(song);
+				}
 			}
+			console.log(playlistSongs);
 
-			// Grabs information about the video provided in the url.
-			const songInfo = await ytdl.getInfo(videoId);
-			const song = {
-				title: songInfo.videoDetails.title,
-				url: songInfo.videoDetails.video_url
-			};
+			if (!playlistSongs.length) {
+				// Setting the video id to default as the second argument (#[command] being the first argument).
+				let videoId = args[1];
+				// Gets url of first search result from a query if user does not provide a url.	
+				if (!videoId.startsWith('https://')) {
+					let query = ''
+					if (args.length > 2) {
+						for (word of args) {
+							if (!word.startsWith(config.prefix)) {
+								query += word + ' ';
+							}
+						} 
+					} else {
+						query = args[1]
+					}
+					const results = await ytsr(query, {limit: 1, pages: 1});
+					videoId = await results.items[0].id;
+				}
+				// Grabs information about the video provided in the url.
+				const songInfo = await ytdl.getInfo(videoId);
+				const song = {
+					title: songInfo.videoDetails.title,
+					url: songInfo.videoDetails.video_url
+				};
+			}
 
 			// Construct the serverQueue if it does not already exist. 
 			if (!serverQueue) {
-				const queueContruct = {
+				const queueConstruct = {
 					textChannel: message.channel,
 					voiceChannel: voiceChannel,
 					connection: null,
@@ -61,24 +84,31 @@ module.exports = {
 					playing: true
 				};
 
-				queue.set(message.guild.id, queueContruct);
-
-				queueContruct.songs.push(song);
+				await queue.set(message.guild.id, queueConstruct);
+				if (!playlistSongs.length) {
+					queueContruct.songs.push(song);
+				} else {
+					queueConstruct.songs = queueConstruct.songs.concat(playlistSongs);
+				}
 
 				try {
 					var connection = await voiceChannel.join();
-					queueContruct.connection = connection;
-					this.play(message, queueContruct.songs[0]);
+					queueConstruct.connection = connection;
+					this.play(message, queueConstruct.songs[0]);
 				} catch (err) {
 					console.log(err);
 					queue.delete(message.guild.id);
 					return message.channel.send(err);
 				}
 			} else {
-				serverQueue.songs.push(song);
-				return message.channel.send(
-					`${song.title} has been added to the queue!`
-				);
+				if (!playlistSongs.length) {
+					serverQueue.songs.push(song);
+					return message.channel.send(`${song.title} has been added to the queue!`);
+				} else {
+					serverQueue.songs = serverQueue.songs.concat(playlistSongs);
+					return message.channel.send(`The ${args[2]} playlist has been added to the queue!`);
+				}
+
 			}
 		} catch (error) {
 			console.log(error);

@@ -1,4 +1,3 @@
-
 module.exports = {
 	name: 'clean',
 	description: 'Clear text channel of unwanted messages.',

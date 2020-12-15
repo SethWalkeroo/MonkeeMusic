@@ -25,6 +25,7 @@ for (const file of cashCommandFiles) {
 const commandsWithArgs = [
 	'clean',
 	'volume',
+	'playlists'
 ];
 
 const commandsForFinance = [
