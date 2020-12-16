@@ -23,6 +23,7 @@
 | queue | #queue | view all of the songs in the current queue. |
 | skip | #skip | skip the song that is currently playing in the queue. |
 | stop | #stop | stop the audio stream and clear the queue. |
+| reverse | #reverse | reverses the order of the current song queue |
 | volume | #volume [value between 0 and 10] | adjust the channel wide volume of the bot. |
 
 # Playlist Commands
