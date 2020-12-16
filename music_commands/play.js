@@ -53,8 +53,8 @@ module.exports = {
 						break;
 					}
 				}
-				for (song of chosenPlaylist) {
-					playlistSongs.push(song);
+				for (playlistSong of chosenPlaylist) {
+					await playlistSongs.push(playlistSong);
 				}
 				console.log(`someone tried to get the playlist: "${playlistSongs}"`);
 			}
