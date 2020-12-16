@@ -82,7 +82,15 @@ async function playlists_add(message, playlists, playlistsLocation, args) {
 			}
 			console.log(query);
 			const results = await ytsr(query, {limit: 1, pages: 1});
+			if (!results.items.length) {
+				return message.reply('Sorry, I could not find a result matching that query! :worried:');
+			}
 			videoId = await results.items[0].id;
+			let itemsIndex = 1;
+			while (!videoId) {
+				videoId = results.items[itemsIndex].id;
+				itemsIndex++;
+			}
 		}
 
 		// Grabs information about the video provided in the url.

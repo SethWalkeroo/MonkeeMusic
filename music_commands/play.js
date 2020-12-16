@@ -41,7 +41,7 @@ module.exports = {
 			const playlistSongs = [];
 			let chosenPlaylist;
 			if (args[1] === 'playlist') {
-				const playlistsLocation = '../MonkeeMusic/music_data/playlists.json';
+				const playlistsLocation = `../MonkeeMusic/music_data/${message.guild.id}.json`;
 				const data = await fs.readFileSync(playlistsLocation);
 				const playlists = await JSON.parse(data);
 				if (!args[2]) {
