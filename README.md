@@ -13,9 +13,11 @@
 
 | Command | Usage | Description |
 | ------- | ---------- | ----------- |
+| bitrate | #bitrate [value (kps)] | Sets the bots bitrate. Will not go into effect until the next song. |
 | clean | #clean [number of messages] | clear messages from the text channel. |
 | clear | #clear | clear all songs from the current queue. |
 | help | #help | display a list of commands and their descriptions. |
+| loop | #loop [number of loops (infinite if not specified)] | loop the song that is currently playing |
 | playing | #playing | display the song that is currently playing. |
 | play | #play [link or query (song name)] | play a specified song in the bot. |
 | play (playlists) | #play [playlist] [playlist name] | play one of the custom playlists through the bot |
