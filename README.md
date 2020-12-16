@@ -1,5 +1,13 @@
-# MonkeeMusic
-A monkey themed Discord music bot. 
+<p align="center">
+    <img src="monk.png" alt="Monkey Picture" width="200" height="200">
+  </a>
+</p>
+
+<h1 align="center">MonkeeMusic</h1>
+<p align="center">A monkey themed Discord music bot. (for no reason)</p>
+<p align="center">Invite him to your server today: https://discord.com/api/oauth2/authorize?client_id=786887384620859392&permissions=8&scope=bot </p>
+<br>
+<br>
 
 # Commands
 
