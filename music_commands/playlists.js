@@ -80,7 +80,7 @@ async function playlists_add(message, playlists, playlistsLocation, args) {
 			} else {
 				query = args[2];
 			}
-			console.log(query);
+			console.log(`${message.author.username} tried to add ${query} to a playlist`);
 			const results = await ytsr(query, {limit: 1, pages: 1});
 			if (!results.items.length) {
 				return message.reply('Sorry, I could not find a result matching that query! :worried:');
