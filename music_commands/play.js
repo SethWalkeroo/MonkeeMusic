@@ -114,8 +114,8 @@ module.exports = {
 						await fs.writeFile(cacheLocation, data, (err) => {
 						    if (err) throw err;
 						    console.log(`
-	${chalk.magenta('NEW QUERY ADDED!')}
-	QUERY: ${chalk.cyan(`${currentQuery}`)}
+${chalk.magenta('NEW QUERY ADDED!')}
+QUERY: ${chalk.cyan(`${currentQuery}`)}
 						    `);
 						});
 					}
