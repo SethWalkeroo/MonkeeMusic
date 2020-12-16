@@ -20,6 +20,7 @@
 | play | #play [link or query (song name)] | play a specified song in the bot. |
 | play (playlists) | #play [playlist] [playlist name] | play one of the custom playlists through the bot |
 | pause | #pause | pause the song that is currently playing. |
+| resume | #resume | resume the song that is currently playing. |
 | queue | #queue | view all of the songs in the current queue. |
 | skip | #skip | skip the song that is currently playing in the queue. |
 | stop | #stop | stop the audio stream and clear the queue. |
