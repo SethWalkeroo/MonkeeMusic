@@ -58,30 +58,10 @@ module.exports = {
 				}
 				console.log(`someone tried to get the playlist: "${playlistSongs}"`);
 			}
-
-
-			let videoId = args[1];
-			let currentQuery = [];
-			if (!playlistSongs.length) {
-				// Setting the video id to default as the second argument (#[command] being the first argument).
-				// Gets url of first search result from a query if user does not provide a url.	
-				if (!videoId.startsWith('https://')) {
-					if (args.length > 2) {
-						currentQuery = args.slice(1, args.length + 1).join([' ']); 
-					} else {
-						currentQuery = args[1];
-					}
-					console.log(`${chalk.yellow(`${message.author.username}`)} tried to query "${chalk.cyan(currentQuery)}"`);
-					const results = await ytsr(currentQuery, {limit: 1, pages: 1});
-					if (!results.items.length) {
-						return message.reply('Sorry, I could not find a result matching that query! :worried:');
-					}
-					videoId = results.items[0].id;
-				}
-			}
-
-			let song = null;
+			// Hell begins...
+			let song = 0;
 			let firstLetter = null;
+			let currentQuery = args.slice(1, args.length + 1).join([' ']); 
 			if (currentQuery.length) {
 				firstLetter = currentQuery[0].toUpperCase();
 				if (playlistCache[`${firstLetter}`]) {
@@ -100,6 +80,28 @@ module.exports = {
 					playlistCache[`${firstLetter}`] = [];
 				}
 				if (!song) {
+					let videoId = args[1];
+					if (!playlistSongs.length) {
+						if (!videoId.startsWith('https://')) {
+							if (args.length > 2) {
+								currentQuery = args.slice(1, args.length + 1).join([' ']); 
+							} else {
+								currentQuery = args[1];
+							}
+							console.log(`${chalk.yellow(`${message.author.username}`)} tried to query "${chalk.cyan(currentQuery)}"`);
+							
+							const results = await ytsr(currentQuery, {limit: 1, pages: 1});
+							if (!results.items.length) {
+								return message.reply('Sorry, I could not find a result matching that query! :worried:');
+							}
+							videoId = results.items[0].id;
+							let itemsIndex = 1;
+							while (!videoId) {
+								videoId = results.items[itemsIndex].id;
+								itemsIndex++;
+							}
+						}
+					}
 					const songInfo = await ytdl.getInfo(videoId);
 					song = {
 						query: currentQuery,
