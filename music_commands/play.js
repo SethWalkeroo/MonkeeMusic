@@ -136,6 +136,9 @@ module.exports = {
 					connection: null,
 					songs: [],
 					volume: 5,
+					bitrate: 512,
+					loop: false,
+					numberOfLoops: 0,
 					playing: true
 				};
 
@@ -184,16 +187,24 @@ module.exports = {
 			queue.delete(guild.id);
 			return;
 		}
+		const queueBitrate = serverQueue.bitrate;
 
 		const dispatcher = serverQueue.connection
-			.play(ytdl(song.url), {bitrate: 512})
+			.play(ytdl(song.url), {bitrate: queueBitrate})
 			.on('finish', () => {
-				serverQueue.songs.shift();
+				if (!serverQueue.loop && serverQueue.numberOfLoops <= 0) {
+					serverQueue.songs.shift();
+				}
+				if (serverQueue.numberOfLoops > 0) {
+					serverQueue.numberOfLoops--;
+				}
 				this.play(message, serverQueue.songs[0]);
 			})
 			.on('error', error => console.error(error));
 
 		dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
-		serverQueue.textChannel.send(`:monkey_face: :musical_note: Start playing: **${song.title}**`);
+		if (!serverQueue.loop) {
+			serverQueue.textChannel.send(`:monkey_face: :musical_note: Start playing: **${song.title}**`);
+		}
 	}
 };

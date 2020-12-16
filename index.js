@@ -20,7 +20,9 @@ for (const file of musicCommandFiles) {
 const commandsWithArgs = [
 	'clean',
 	'volume',
-	'playlists'
+	'playlists',
+	'bitrate',
+	'loop'
 ];
 
 
