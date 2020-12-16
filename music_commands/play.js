@@ -59,8 +59,8 @@ module.exports = {
 				console.log(`${message.author.username} tried to get the playlist: "${chosenPlaylist}"`);
 			}
 			
+			let song = 0;
 			if (!playlistSongs.length) {
-				let song = 0;
 				let firstLetter = null;
 				let currentQuery = args.slice(1, args.length + 1).join([' ']); 
 				if (currentQuery.length) {
