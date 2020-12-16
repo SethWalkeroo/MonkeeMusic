@@ -1,4 +1,5 @@
 const fs = require('fs');
+const chalk = require('chalk');
 const config = require('../config.json');
 const ytsr = require('ytsr');
 const ytdl = require('ytdl-core');
@@ -120,8 +121,18 @@ async function playlists_create(message, playlists, playlistsLocation, args) {
 		message.reply('Please provide a playlist name that does not contain spaces.');
 	} else {
 		playlistName = args[1];
+		for (playlist in playlists) {
+			if (playlist == playlistName) {
+				return message.reply('That playlist already exists! Try a different name or delete the old playlist.');
+			}
+		}
 		playlists[`${playlistName}`] = [];
-		console.log(playlistsLocation);
+		console.log(`
+${chalk.magenta('PLAYLIST CREATED!')}
+NAME: ${chalk.yellow(`${playlistName}`)}
+SERVER: ${chalk.green(`${message.guild.name}`)}
+LOCATION: ${chalk.green(`${playlistsLocation}`)}
+		`);
 		let data = JSON.stringify(playlists, null, 2);
 		await fs.writeFile(playlistsLocation, data, (err) => {
 		    if (err) throw err;

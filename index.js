@@ -1,4 +1,5 @@
-const fs = require('fs')
+const fs = require('fs');
+const chalk = require('chalk');
 const Discord = require('discord.js');
 const Client = require('./client/Client');
 const config = require('./config.json');
@@ -24,7 +25,7 @@ const commandsWithArgs = [
 
 
 client.once('ready', async () => {
-	console.log('Connected!');
+	console.log('Connected to Discord!');
 });
 
 client.once('reconnecting', () => {
@@ -35,8 +36,18 @@ client.once('disconnect', () => {
   console.log('Disconnect!');
 });
 
+client.once('message', message => {
+	console.log(`
+${chalk.cyan('JOINED NEW SERVER!')}
+GUILD-NAME: ${chalk.yellow(`${message.guild.name}`)}
+GUILD-ID: ${chalk.green(`${message.guild.id}`)}
+USER-NAME: ${chalk.yellow(`${message.author.username}`)}
+USER-ID: ${chalk.green(`${message.author.id}`)}
+	`);
+});
 
 client.on('message', async message => {
+
 	const playlistFiles = fs.readdirSync('./music_data').filter(file => file.endsWith('.json'));
 	let localPlaylistLocation = `./music_data/${message.guild.id}.json`;
 	if (!playlistFiles.includes(`${message.guild.id}.json`)) {

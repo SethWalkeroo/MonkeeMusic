@@ -1,7 +1,10 @@
 const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
+const stringSimilarity = require('string-similarity');
 const fs = require('fs');
+const chalk = require('chalk');
 const config = require('../config.json');
+const cacheLocation = '../MonkeeMusic/music_data/query_cache.json'
 const queueLimit = 250;
 
 module.exports = {
@@ -17,6 +20,9 @@ module.exports = {
 			const queue = message.client.queue;
 			const serverQueue = message.client.queue.get(message.guild.id);
 			const voiceChannel = message.member.voice.channel;
+			const queryData = await fs.readFileSync(cacheLocation);
+			const playlistCache = await JSON.parse(queryData);
+
 
 			if (!voiceChannel) {
 				return message.channel.send('You need to be in a voice channel to play music!');
@@ -55,18 +61,18 @@ module.exports = {
 
 
 			let videoId = args[1];
+			let currentQuery = [];
 			if (!playlistSongs.length) {
 				// Setting the video id to default as the second argument (#[command] being the first argument).
 				// Gets url of first search result from a query if user does not provide a url.	
 				if (!videoId.startsWith('https://')) {
-					let query = [];
 					if (args.length > 2) {
-						query = args.slice(1, args.length + 1).join([' ']); 
+						currentQuery = args.slice(1, args.length + 1).join([' ']); 
 					} else {
-						query = args[1];
+						currentQuery = args[1];
 					}
-					console.log(`Someone tried to query "${query}"`);
-					const results = await ytsr(query, {limit: 1, pages: 1});
+					console.log(`${chalk.yellow(`${message.author.username}`)} tried to query "${chalk.cyan(currentQuery)}"`);
+					const results = await ytsr(currentQuery, {limit: 1, pages: 1});
 					if (!results.items.length) {
 						return message.reply('Sorry, I could not find a result matching that query! :worried:');
 					}
@@ -74,11 +80,49 @@ module.exports = {
 				}
 			}
 
-			const songInfo = await ytdl.getInfo(videoId);
-			const song = {
-				title: songInfo.videoDetails.title,
-				url: songInfo.videoDetails.video_url
-			};
+			let song = null;
+			let firstLetter = null;
+			if (currentQuery.length) {
+				firstLetter = currentQuery[0].toUpperCase();
+				if (playlistCache[`${firstLetter}`]) {
+					for (previousQuery of playlistCache[`${firstLetter}`]) {
+						if (stringSimilarity.compareTwoStrings(previousQuery.query, currentQuery) >= 0.70) {
+							console.log(chalk.green(`MATCHING QUERY FOUND! for ${chalk.yellow(currentQuery)}`));
+							song = {
+								title: previousQuery.title,
+								url: previousQuery.url
+							};
+							playlistCache[`${firstLetter}`].push(song);
+							break;
+						}
+					}
+				} else {
+					playlistCache[`${firstLetter}`] = [];
+				}
+				if (!song) {
+					const songInfo = await ytdl.getInfo(videoId);
+					song = {
+						query: currentQuery,
+						title: songInfo.videoDetails.title,
+						url: songInfo.videoDetails.video_url
+					};
+					playlistCache[`${firstLetter}`].push(song);
+					const data = await JSON.stringify(playlistCache, null, 2);
+					await fs.writeFile(cacheLocation, data, (err) => {
+					    if (err) throw err;
+					    console.log(`
+${chalk.magenta('NEW QUERY ADDED!')}
+QUERY: ${chalk.cyan(`${currentQuery}`)}
+					    `);
+					});
+				}
+			} else {
+				const songInfo = await ytdl.getInfo(videoId);
+				song = {
+					title: songInfo.videoDetails.title,
+					url: songInfo.videoDetails.video_url
+				};
+			}
 
 			// Construct the serverQueue if it does not already exist. 
 			if (!serverQueue) {
@@ -113,7 +157,7 @@ module.exports = {
 				}
 				if (!playlistSongs.length) {
 					serverQueue.songs.push(song);
-					return message.channel.send(`$**{song.title}** has been added to the queue! :monkey_face: :thumbup:`);
+					return message.channel.send(`**${song.title}** has been added to the queue! :monkey_face: :thumbup:`);
 				} else {
 					serverQueue.songs = serverQueue.songs.concat(playlistSongs);
 					return message.channel.send(`The **${args[2]}** playlist has been added to the queue! :monkey_face: :thumbup:`);
