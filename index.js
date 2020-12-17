@@ -60,6 +60,8 @@ client.on('message', async message => {
 	const configFiles = fs.readdirSync('./server_configs').filter(file => file.endsWith('.json'));
 	let localConfigLocation = `./server_configs/${message.guild.id}.json`;
 	if (!configFiles.includes(`${message.guild.id}.json`)) {
+		delete config.token;
+		delete config.playlistLocation;
 		fs.writeFileSync(localConfigLocation, JSON.stringify(config, null, 2));
 	}
 

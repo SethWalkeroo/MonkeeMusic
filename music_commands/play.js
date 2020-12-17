@@ -3,7 +3,6 @@ const ytsr = require('ytsr');
 const stringSimilarity = require('string-similarity');
 const fs = require('fs');
 const chalk = require('chalk');
-const config = require('../config.json');
 const cacheLocation = '../MonkeeMusic/music_data/query_cache.json'
 const queueLimit = 250;
 
@@ -22,6 +21,9 @@ module.exports = {
 			const voiceChannel = message.member.voice.channel;
 			const queryData = await fs.readFileSync(cacheLocation);
 			const playlistCache = await JSON.parse(queryData);
+			const configLocation = `../MonkeeMusic/server_configs/${message.guild.id}.json`;
+			const rawData = fs.readFileSync(configLocation);
+			let config = JSON.parse(rawData);
 
 
 			if (!voiceChannel) {
@@ -34,7 +36,7 @@ module.exports = {
 			}
 
 			if (!args[1]) {
-				return message.reply('Please enter an argument for the play command!');
+				return message.channel.send('Please enter an argument for the play command!');
 			}
 
 			// check for the playlist command
@@ -45,7 +47,7 @@ module.exports = {
 				const data = await fs.readFileSync(playlistsLocation);
 				const playlists = await JSON.parse(data);
 				if (!args[2]) {
-					return message.reply('Please specify which playlist you would like to add!');
+					return message.channel.send('Please specify which playlist you would like to add!');
 				}
 				for (playlist in playlists) {
 					if (args[2] === playlist) {
@@ -60,7 +62,7 @@ module.exports = {
 			}
 			
 			const song = await this.getSong(message, args, playlistSongs, playlistCache);
-			this.checkQueue(message, args, song, voiceChannel, queue, queueLimit, serverQueue, playlistSongs);
+			this.checkQueue(message, args, config, song, voiceChannel, queue, queueLimit, serverQueue, playlistSongs);
 		} catch (error) {
 			console.log(error);
 			message.channel.send(error.message);
@@ -108,7 +110,7 @@ module.exports = {
 					firstLetter = currentQuery[0].toUpperCase();
 					if (playlistCache[`${firstLetter}`]) {
 						for (previousQuery of playlistCache[`${firstLetter}`]) {
-							if (stringSimilarity.compareTwoStrings(previousQuery.query, currentQuery) >= 0.70) {
+							if (stringSimilarity.compareTwoStrings(previousQuery.query, currentQuery) >= 0.60) {
 								console.log(chalk.green(`MATCHING QUERY FOUND! for ${chalk.yellow(currentQuery)}`));
 								song = {
 									title: previousQuery.title,
@@ -135,7 +137,7 @@ module.exports = {
 								
 								const results = await ytsr(currentQuery, {limit: 1, pages: 1});
 								if (!results.items.length) {
-									return message.reply('Sorry, I could not find a result matching that query! :worried:');
+									return message.channel.send('Sorry, I could not find a result matching that query! :worried:');
 								}
 								videoId = results.items[0].id;
 								let itemsIndex = 1;
@@ -174,7 +176,7 @@ QUERY: ${chalk.cyan(`${currentQuery}`)}
 			return song;
 	},
 
-	async checkQueue(message, args, song, voiceChannel, queue, queueLimit, serverQueue, playlistSongs) {
+	async checkQueue(message, args, config, song, voiceChannel, queue, queueLimit, serverQueue, playlistSongs) {
 		// Construct the serverQueue if it does not already exist. 
 		if (!serverQueue) {
 			const queueConstruct = {
@@ -182,8 +184,8 @@ QUERY: ${chalk.cyan(`${currentQuery}`)}
 				voiceChannel: voiceChannel,
 				connection: null,
 				songs: [],
-				volume: 5,
-				bitrate: 512,
+				volume: config.volume,
+				bitrate: config.bitrate,
 				loop: false,
 				numberOfLoops: 0,
 				playing: true
@@ -207,7 +209,7 @@ QUERY: ${chalk.cyan(`${currentQuery}`)}
 			}
 		} else {
 			if (serverQueue.songs.length >= queueLimit) {
-				return message.reply(`You have reached the maximum number of songs to have in queue (**${queueLimit}**) :worried:`);
+				return message.channel.send(`You have reached the maximum number of songs to have in queue (**${queueLimit}**) :worried:`);
 			}
 			if (!playlistSongs.length) {
 				serverQueue.songs.push(song);

@@ -10,9 +10,9 @@ module.exports = {
 		if (args[0]) {
 			const amount = parseInt(args[0]);
 			if (isNaN(amount)) {
-				return message.reply('Please enter a valid number of loops.');
+				return message.channel.send('Please enter a valid number of loops.');
 			} else if (amount <= 0) {
-				return message.reply('Please enter a value greater than 0.');
+				return message.channel.send('Please enter a value greater than 0.');
 			} else {
 				serverQueue.numberOfLoops = amount;
 				return message.channel.send(`**${serverQueue.songs[0].title}** will now loop **${amount}** time(s)! :monkey_face: :thumbup:`)

@@ -54,7 +54,7 @@ module.exports = {
 				`The **${playlistName}** playlist has a duration of **hours : ${totalDuration.minutes} minutes: ${totalDuration.seconds} seconds**! :monkey_face:`
 			);
 		} else {
-			return message.reply('The specified playlist does not exist! :worried:');
+			return message.channel.send('The specified playlist does not exist! :worried:');
 		}
 	},
 };

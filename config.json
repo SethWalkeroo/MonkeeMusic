@@ -1,5 +1,7 @@
 {
 	"prefix": "#",
 	"token": "",
-	"playlistLocation": "../music_data/playlists.json"
+	"playlistLocation": "../music_data/playlists.json",
+	"bitrate": 512,
+	"volume": 5
 }

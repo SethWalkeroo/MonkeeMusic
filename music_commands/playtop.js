@@ -34,7 +34,7 @@ module.exports = {
 			}
 
 			if (!args[1]) {
-				return message.reply('Please enter an argument for the play command!');
+				return message.channel.send('Please enter an argument for the play command!');
 			}
 
 			// check for the playlist command
@@ -45,7 +45,7 @@ module.exports = {
 				const data = await fs.readFileSync(playlistsLocation);
 				const playlists = await JSON.parse(data);
 				if (!args[2]) {
-					return message.reply('Please specify which playlist you would like to add!');
+					return message.channel.send('Please specify which playlist you would like to add!');
 				}
 				for (playlist in playlists) {
 					if (args[2] === playlist) {
@@ -134,7 +134,7 @@ module.exports = {
 								
 								const results = await ytsr(currentQuery, {limit: 1, pages: 1});
 								if (!results.items.length) {
-									return message.reply('Sorry, I could not find a result matching that query! :worried:');
+									return message.channel.send('Sorry, I could not find a result matching that query! :worried:');
 								}
 								videoId = results.items[0].id;
 								let itemsIndex = 1;
@@ -209,7 +209,7 @@ QUERY: ${chalk.cyan(`${currentQuery}`)}
 			}
 		} else {
 			if (serverQueue.songs.length >= queueLimit) {
-				return message.reply(`You have reached the maximum number of songs to have in queue (**${queueLimit}**) :worried:`);
+				return message.channel.send(`You have reached the maximum number of songs to have in queue (**${queueLimit}**) :worried:`);
 			}
 			if (!playlistSongs.length) {
 				const currentSong = serverQueue.songs[0];

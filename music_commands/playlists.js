@@ -39,18 +39,18 @@ module.exports = {
 				playlists_delete(message, playlists, playlistsLocation, args);
 				break;
 			default:
-				message.reply('Invalid playlist command.');
+				message.channel.send('Invalid playlist command.');
 		}
 	},
 };
 
 async function playlists_add(message, playlists, playlistsLocation, args) {
 	if (!args[1]) {
-		message.reply('Please specify which playlist you want to add the song to.');
+		message.channel.send('Please specify which playlist you want to add the song to.');
 	} else {
 		let videoId = args[2];
 		if (!videoId) {
-			return message.reply('Please make sure to specify a song to add to the playlist.');
+			return message.channel.send('Please make sure to specify a song to add to the playlist.');
 		}
 
 		let playlistName = null;
@@ -61,7 +61,7 @@ async function playlists_add(message, playlists, playlistsLocation, args) {
 			}
 		}
 		if (!playlistName) {
-			return message.reply('Sorry, that playlist doesn\'t seem to exist.');
+			return message.channel.send('Sorry, that playlist doesn\'t seem to exist.');
 		}
 
 		if (playlists[`${playlistName}`].length >= songLimit) {
@@ -83,7 +83,7 @@ async function playlists_add(message, playlists, playlistsLocation, args) {
 			console.log(`${message.author.username} tried to add ${query} to a playlist`);
 			const results = await ytsr(query, {limit: 1, pages: 1});
 			if (!results.items.length) {
-				return message.reply('Sorry, I could not find a result matching that query! :worried:');
+				return message.channel.send('Sorry, I could not find a result matching that query! :worried:');
 			}
 			videoId = await results.items[0].id;
 			let itemsIndex = 1;
@@ -106,7 +106,7 @@ async function playlists_add(message, playlists, playlistsLocation, args) {
 		let data = JSON.stringify(playlists, null, 2);
 		await fs.writeFile(playlistsLocation, data, (err) => {
 		    if (err) throw err;
-		    message.reply(`**${song.title}** has been added to the ${playlistName} playlist!`);
+		    message.channel.send(`**${song.title}** has been added to the ${playlistName} playlist!`);
 		});
 	}
 }
@@ -125,14 +125,14 @@ async function playlists_create(message, playlists, playlistsLocation, args) {
 	}
 
 	if (!args[1]) {
-		message.reply('Please provide a name when creating a playlist!');
+		message.channel.send('Please provide a name when creating a playlist!');
 	} else if (args.length > 2) {
-		message.reply('Please provide a playlist name that does not contain spaces.');
+		message.channel.send('Please provide a playlist name that does not contain spaces.');
 	} else {
 		playlistName = args[1];
 		for (playlist in playlists) {
 			if (playlist == playlistName) {
-				return message.reply('That playlist already exists! Try a different name or delete the old playlist.');
+				return message.channel.send('That playlist already exists! Try a different name or delete the old playlist.');
 			}
 		}
 		playlists[`${playlistName}`] = [];
@@ -145,7 +145,7 @@ LOCATION: ${chalk.green(`${playlistsLocation}`)}
 		let data = JSON.stringify(playlists, null, 2);
 		await fs.writeFile(playlistsLocation, data, (err) => {
 		    if (err) throw err;
-		    message.reply(`Playlist "**${playlistName}**" has been successfully created!`);
+		    message.channel.send(`Playlist "**${playlistName}**" has been successfully created!`);
 		});
 	}
 }
@@ -154,7 +154,7 @@ function playlists_show(message, playlists, playlistsLocation, args) {
 	const playlistName = args[1];
 	const songs = playlists[`${playlistName}`];
 	if (!songs) {
-		return message.reply('That playlist does not exist.');
+		return message.channel.send('That playlist does not exist.');
 	}
 	let results = '';
 	let count = 1;
@@ -170,7 +170,7 @@ async function playlists_remove(message, playlists, playlistsLocation, args) {
 	const songPosition = parseInt(args[2] - 1);
 	let songs = playlists[`${playlistName}`];
 	if (!songs) {
-		return message.reply('That playlist does not exist!');
+		return message.channel.send('That playlist does not exist!');
 	}
 	delete playlists[`${playlistName}`][songPosition];
 	for (song of playlists[`${playlistName}`]) {
@@ -190,13 +190,13 @@ async function playlists_remove(message, playlists, playlistsLocation, args) {
 	songs = JSON.stringify(playlists, null, 2);
 	await fs.writeFile(playlistsLocation, songs, (err) => {
 		if (err) throw err;
-		message.reply(`Song at position **${songPosition + 1}** has been removed from the **${playlistName}** playlist! :thumbup:`);
+		message.channel.send(`Song at position **${songPosition + 1}** has been removed from the **${playlistName}** playlist! :thumbup:`);
 	});
 }
 
 function playlists_all(message, playlists, args) {
 	if (JSON.stringify(playlists) === '{}') {
-		return message.reply('There are currently no playlists created for this server.');
+		return message.channel.send('There are currently no playlists created for this server.');
 	}
 	let count = 1;
 	let result = '';
