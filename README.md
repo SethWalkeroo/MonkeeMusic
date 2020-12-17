@@ -20,6 +20,7 @@
 | loop | #loop [number of loops (infinite if not specified)] | loop the song that is currently playing. |
 | playing | #playing | display the song that is currently playing. |
 | play | #play [link or query (song name)] | play a specified song in the bot. |
+| playtop | #playtop [link or query (song name)] | add a song to the upcoming position in the queue. |
 | play (playlists) | #play [playlist] [playlist name] | play one of the custom playlists through the bot. |
 | pause | #pause | pause the song that is currently playing. |
 | resume | #resume | resume the song that is currently playing. |
