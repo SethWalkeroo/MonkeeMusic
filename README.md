@@ -4,7 +4,7 @@
 </p>
 
 <h1 align="center">MonkeeMusic</h1>
-<p align="center">A monkey themed Discord music bot. (for no reason)</p>
+<p align="center">A feature rich and monkey themed Discord music bot. (for no reason)</p>
 <p align="center">Invite him to your server today: https://discord.com/api/oauth2/authorize?client_id=786887384620859392&permissions=8&scope=bot </p>
 <br>
 <br>
@@ -17,7 +17,7 @@
 | clean | #clean [number of messages] | clear messages from the text channel. |
 | clear | #clear | clear all songs from the current queue. |
 | clear | #clear | clear all songs from the current queue. |
-| duration | #duration [arg to see queue duration] | displays either the duration of the song playing or the duration of the current queue. |
+| duration | #duration, #duratin queue, #duration [playlist name] | displays either the duration of the song playing, the current queue, or a specified playlist. |
 | loop | #loop [number of loops (infinite if not specified)] | loop the song that is currently playing. |
 | playing | #playing | display the song that is currently playing. |
 | play | #play [link or query (song name)] | play a specified song in the bot. |
