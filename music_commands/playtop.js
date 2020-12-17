@@ -15,12 +15,11 @@ module.exports = {
 	cooldown: 3,
 	async execute(message) {
 		try {
-			
 			const args = message.content.split(' ');
 			const queue = message.client.queue;
 			const serverQueue = message.client.queue.get(message.guild.id);
 			const voiceChannel = message.member.voice.channel;
-			const queryData = await fs.readFileSync(cacheLocation);
+			const queryData = fs.readFileSync(cacheLocation);
 			const playlistCache = await JSON.parse(queryData);
 
 
@@ -42,7 +41,7 @@ module.exports = {
 			let chosenPlaylist;
 			if (args[1] === 'playlist') {
 				const playlistsLocation = `../MonkeeMusic/music_data/${message.guild.id}.json`;
-				const data = await fs.readFileSync(playlistsLocation);
+				const data = fs.readFileSync(playlistsLocation);
 				const playlists = await JSON.parse(data);
 				if (!args[2]) {
 					return message.channel.send('Please specify which playlist you would like to add!');
@@ -152,8 +151,8 @@ module.exports = {
 							duration: songInfo.videoDetails.lengthSeconds
 						};
 						playlistCache[`${firstLetter}`].push(song);
-						const data = await JSON.stringify(playlistCache, null, 2);
-						await fs.writeFile(cacheLocation, data, (err) => {
+						const data = JSON.stringify(playlistCache, null, 2);
+						fs.writeFile(cacheLocation, data, (err) => {
 						    if (err) throw err;
 						    console.log(`
 ${chalk.magenta('NEW QUERY ADDED!')}

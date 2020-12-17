@@ -1,19 +1,18 @@
 const fs = require('fs')
-const Discord = require('discord.js')
-const config = require('../config.json')
 
 module.exports = {
 	name: 'help',
 	description: 'List all available music commands.',
 	usage: '#help',
 	guildOnly: true,
-	cooldown: 2,
-	execute(message) {
+	cooldown: 30,
+	async execute(message) {
 		let title1 = 'MonkeeMusic Commands!';
 		let title2 = 'Playlist Commands!'
 		const commandBoarder1 = '='.repeat(title1.length);
 		const commandBoarder2 = '='.repeat(title2.length);
 		let commands = `${commandBoarder1}\n**${title1}** :monkey_face:\n${commandBoarder1}\n`;
+		let commands2 = ``;
 		const commandFiles = fs.readdirSync('./music_commands').filter(file => file.endsWith('.js'));
 
 		let commandLengths = [];
@@ -23,12 +22,19 @@ module.exports = {
 		}
 		const longestCommand = Math.max(...commandLengths);
 
+		let count = 0;
 		for (const file of commandFiles) {
 			const command = require(`./${file}`);
-			commands += `${command.name}${' '.repeat(longestCommand - command.name.length)}   **${command.usage}**   ${command.description}\n\n`;
+			if (count < 12) {
+				commands += `${command.name}${' '.repeat(longestCommand - command.name.length)}   **${command.usage}**   ${command.description}\n\n`;
+			} else {
+				if (count === 12) {
+					commands2 += '\n';
+				}
+				commands2 += `${command.name}${' '.repeat(longestCommand - command.name.length)}   **${command.usage}**   ${command.description}\n\n`;
+			}
+			count++;
 		}
-
-		commands += `${commandBoarder2}\n**${title2}** :monkey_face:\n${commandBoarder2}\n`;
 
 		playlistCommands = [
 			'create playlist',
@@ -68,7 +74,9 @@ module.exports = {
 			commandsTwo += `${playlistCommands[i]}${' '.repeat(longestPlaylistCommand - playlistCommands[i].length)}    **${playlistUsages[i]}**    ${playlistDescs[i]}\n\n`;
 		}
 
-		message.channel.send(commands);
+		await message.channel.send(commands);
+		message.channel.send(commands2);
+		message.channel.send(`${commandBoarder2}\n**${title2}** :monkey_face:\n${commandBoarder2}\n`);
 		message.channel.send(commandsTwo);
 
 	},

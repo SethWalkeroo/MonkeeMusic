@@ -8,6 +8,7 @@ module.exports = {
 	cooldown: 3,
 	async execute(message, args) {
 		if (!args[0]) return message.channel.send('Please specify a playlist name for the queue!');
+		
 		const playlistsLocation = `../MonkeeMusic/music_data/${message.guild.id}.json`;
 		const rawData = await fs.readFileSync(playlistsLocation);
 		let playlists = await JSON.parse(rawData);

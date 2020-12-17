@@ -3,6 +3,7 @@ const chalk = require('chalk');
 const Discord = require('discord.js');
 const Client = require('./client/Client');
 const config = require('./config.json');
+const { Console } = require('console');
 const prefix = config.prefix;
 const token = config.token;
 
@@ -24,11 +25,28 @@ const commandsWithArgs = [
 	'bitrate',
 	'loop',
 	'save',
-	'duration'
+	'duration',
+	'skipto',
+	'move'
 ];
 
 client.once('ready', async () => {
-	console.log('Connected to Discord!');
+	console.log(chalk.green('Connected to Discord!'));
+	client.guilds.cache.forEach(guild => {
+		console.log(`
+${chalk.cyan('JOINED SERVER!')}
+GUILD-NAME: ${chalk.yellow(`${guild.name}`)}
+GUILD-ID: ${chalk.green(`${guild.id}`)}
+		`);
+	});
+});
+
+client.on("guildCreate", (guild) => {
+	console.log(`
+${chalk.magenta('JOINED NEW SERVER!')}
+GUILD-NAME: ${chalk.yellow(`${guild.name}`)}
+GUILD-ID: ${chalk.green(`${guild.id}`)}
+	`);
 });
 
 client.once('reconnecting', () => {
@@ -39,17 +57,9 @@ client.once('disconnect', () => {
   console.log('Disconnect!');
 });
 
-client.once('message', message => {
-	console.log(`
-${chalk.cyan('JOINED NEW SERVER!')}
-GUILD-NAME: ${chalk.yellow(`${message.guild.name}`)}
-GUILD-ID: ${chalk.green(`${message.guild.id}`)}
-USER-NAME: ${chalk.yellow(`${message.author.username}`)}
-USER-ID: ${chalk.green(`${message.author.id}`)}
-	`);
-});
 
-client.on('message', async message => {
+
+client.on('message', async (message, guild) => {
 
 	const playlistFiles = fs.readdirSync('./music_data').filter(file => file.endsWith('.json'));
 	let localPlaylistLocation = `./music_data/${message.guild.id}.json`;
@@ -66,10 +76,10 @@ client.on('message', async message => {
 	}
 
 
+
 	const args = message.content.slice(prefix.length).split(/ +/);
 	const commandName = args.shift().toLowerCase();
 	const command = client.commands.get(commandName);
-
 
 	if (message.author.bot) return;
 	if (!message.content.startsWith(prefix)) return;

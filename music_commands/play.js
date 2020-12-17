@@ -19,7 +19,7 @@ module.exports = {
 			const queue = message.client.queue;
 			const serverQueue = message.client.queue.get(message.guild.id);
 			const voiceChannel = message.member.voice.channel;
-			const queryData = await fs.readFileSync(cacheLocation);
+			const queryData = fs.readFileSync(cacheLocation);
 			const playlistCache = await JSON.parse(queryData);
 			const configLocation = `../MonkeeMusic/server_configs/${message.guild.id}.json`;
 			const rawData = fs.readFileSync(configLocation);
@@ -44,7 +44,7 @@ module.exports = {
 			let chosenPlaylist = null;
 			if (args[1] === 'playlist') {
 				const playlistsLocation = `../MonkeeMusic/music_data/${message.guild.id}.json`;
-				const data = await fs.readFileSync(playlistsLocation);
+				const data = fs.readFileSync(playlistsLocation);
 				const playlists = await JSON.parse(data);
 				if (!args[2]) {
 					return message.channel.send('Please specify which playlist you would like to add!');
@@ -69,14 +69,14 @@ module.exports = {
 		}
 	},
 
-	play(message, song) {
+	async play(message, song) {
 		const queue = message.client.queue;
 		const guild = message.guild;
 		const serverQueue = queue.get(message.guild.id);
 
 		if (!song) {
 			message.channel.send('There are no more songs left in the queue! :worried:');
-			serverQueue.voiceChannel.leave();
+			await serverQueue.voiceChannel.leave();
 			queue.delete(guild.id);
 			return;
 		}
@@ -110,7 +110,7 @@ module.exports = {
 					firstLetter = currentQuery[0].toUpperCase();
 					if (playlistCache[`${firstLetter}`]) {
 						for (previousQuery of playlistCache[`${firstLetter}`]) {
-							if (stringSimilarity.compareTwoStrings(previousQuery.query, currentQuery) >= 0.60) {
+							if (stringSimilarity.compareTwoStrings(previousQuery.query, currentQuery) >= 0.80) {
 								console.log(chalk.green(`MATCHING QUERY FOUND! for ${chalk.yellow(currentQuery)}`));
 								song = {
 									title: previousQuery.title,
@@ -155,8 +155,8 @@ module.exports = {
 							duration: songInfo.videoDetails.lengthSeconds
 						};
 						playlistCache[`${firstLetter}`].push(song);
-						const data = await JSON.stringify(playlistCache, null, 2);
-						await fs.writeFile(cacheLocation, data, (err) => {
+						const data = JSON.stringify(playlistCache, null, 2);
+						fs.writeFile(cacheLocation, data, (err) => {
 						    if (err) throw err;
 						    console.log(`
 ${chalk.magenta('NEW QUERY ADDED!')}

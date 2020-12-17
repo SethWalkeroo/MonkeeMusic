@@ -19,7 +19,7 @@
     "fluent-ffmpeg": "^2.1.2",
     "shuffle-array": "^1.0.1",
     "string-similarity": "^4.0.3",
-    "ytdl-core": "^4.1.6",
+    "ytdl-core": "^4.1.7",
     "ytsr": "^2.0.1"
   }
 }
