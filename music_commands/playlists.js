@@ -99,6 +99,7 @@ async function playlists_add(message, playlists, playlistsLocation, args) {
 		const song = {
 			title: songInfo.videoDetails.title,
 			url: songInfo.videoDetails.video_url,
+			duration: songInfo.videoDetails.lengthSeconds,
 			position: songPosition
 		};
 		playlists[`${playlistName}`].push(song);

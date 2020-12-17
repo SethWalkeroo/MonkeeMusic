@@ -27,7 +27,6 @@ const commandsWithArgs = [
 	'duration'
 ];
 
-
 client.once('ready', async () => {
 	console.log('Connected to Discord!');
 });
@@ -56,6 +55,12 @@ client.on('message', async message => {
 	let localPlaylistLocation = `./music_data/${message.guild.id}.json`;
 	if (!playlistFiles.includes(`${message.guild.id}.json`)) {
 		fs.writeFileSync(localPlaylistLocation, '{}');
+	}
+
+	const configFiles = fs.readdirSync('./server_configs').filter(file => file.endsWith('.json'));
+	let localConfigLocation = `./server_configs/${message.guild.id}.json`;
+	if (!configFiles.includes(`${message.guild.id}.json`)) {
+		fs.writeFileSync(localConfigLocation, JSON.stringify(config, null, 2));
 	}
 
 
@@ -108,6 +113,19 @@ client.on('message', async message => {
 		console.error(error);
 		message.reply('There was an error trying to execute that command!');
 	}
+});
+
+client.on('voiceStateUpdate', (oldState, newState) => {
+  // if nobody left the channel in question, return.
+  if (oldState.channelID !==  oldState.guild.me.voice.channelID || newState.channel)
+    return;
+
+  // otherwise, check how many people are in the channel now
+  if (!oldState.channel.members.size - 1) 
+    setTimeout(() => { // if 1 (you), wait five minutes
+      if (!oldState.channel.members.size - 1) // if there's still 1 member, 
+         oldState.channel.leave(); // leave
+     }, 100000); // (5 min in ms)
 });
 
 

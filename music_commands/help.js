@@ -16,9 +16,16 @@ module.exports = {
 		let commands = `${commandBoarder1}\n**${title1}** :monkey_face:\n${commandBoarder1}\n`;
 		const commandFiles = fs.readdirSync('./music_commands').filter(file => file.endsWith('.js'));
 
+		let commandLengths = [];
 		for (const file of commandFiles) {
 			const command = require(`./${file}`);
-			commands += `${command.name}  -->  **${command.usage}**  -->  ${command.description}\n\n`;
+			commandLengths.push(command.name.length);
+		}
+		const longestCommand = Math.max(...commandLengths);
+
+		for (const file of commandFiles) {
+			const command = require(`./${file}`);
+			commands += `${command.name}${' '.repeat(longestCommand - command.name.length)}   **${command.usage}**   ${command.description}\n\n`;
 		}
 
 		commands += `${commandBoarder2}\n**${title2}** :monkey_face:\n${commandBoarder2}\n`;
@@ -50,9 +57,15 @@ module.exports = {
 			'show all of the playlists on the server.'
 		];
 
+		let playlistCommandLengths = [];
+		for (playCommand of playlistCommands) {
+			playlistCommandLengths.push(playCommand.length);
+		}
+		const longestPlaylistCommand = Math.max(...playlistCommandLengths);
+
 		let commandsTwo = '';
-		for (let i = 0; i <= playlistCommands.length; i++) {
-			commandsTwo += `${playlistCommands[i]}  -->  **${playlistUsages[i]}**  -->  ${playlistDescs[i]}\n\n`;
+		for (let i = 0; i < playlistCommands.length; i++) {
+			commandsTwo += `${playlistCommands[i]}${' '.repeat(longestPlaylistCommand - playlistCommands[i].length)}    **${playlistUsages[i]}**    ${playlistDescs[i]}\n\n`;
 		}
 
 		message.channel.send(commands);
