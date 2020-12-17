@@ -54,13 +54,13 @@ module.exports = {
 					}
 				}
 				for (playlistSong of chosenPlaylist) {
-					await playlistSongs.push(playlistSong);
+					playlistSongs.push(playlistSong);
 				}
-				console.log(`${message.author.username} tried to get the playlist: "${chosenPlaylist}"`);
+				console.log(`${message.author.username} tried to get a playlist`);
 			}
 			
 			const song = await this.getSong(message, args, playlistSongs, playlistCache);
-			this.checkQueue(message, song, voiceChannel, queue, queueLimit, serverQueue, playlistSongs);
+			this.checkQueue(message, args, song, voiceChannel, queue, queueLimit, serverQueue, playlistSongs);
 		} catch (error) {
 			console.log(error);
 			message.channel.send(error.message);
@@ -173,7 +173,7 @@ QUERY: ${chalk.cyan(`${currentQuery}`)}
 			return song;
 	},
 
-	async checkQueue(message, song, voiceChannel, queue, queueLimit, serverQueue, playlistSongs) {
+	async checkQueue(message, args, song, voiceChannel, queue, queueLimit, serverQueue, playlistSongs) {
 		// Construct the serverQueue if it does not already exist. 
 		if (!serverQueue) {
 			const queueConstruct = {

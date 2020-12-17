@@ -22,7 +22,9 @@ const commandsWithArgs = [
 	'volume',
 	'playlists',
 	'bitrate',
-	'loop'
+	'loop',
+	'save',
+	'duration'
 ];
 
 
