@@ -14,7 +14,11 @@ module.exports = {
 		let result = ''
 		let count = 1
 		for (song of serverQueue.songs) {
-			result += `**${count}:** ${song.title}\n`;
+			if (count === 1) {
+				result += `**Currently playing:** ${song.title}\n`;
+			} else {
+				result += `**${count}:** ${song.title}\n`;
+			}
 			count += 1;
 		}
 		message.channel.send(result);

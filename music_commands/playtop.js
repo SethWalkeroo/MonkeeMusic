@@ -8,9 +8,9 @@ const cacheLocation = '../MonkeeMusic/music_data/query_cache.json'
 const queueLimit = 250;
 
 module.exports = {
-	name: 'play',
-	description: 'Play a song in your channel!',
-	usage: '#play [link or query (song name)] **_also_** #play [playlist] [playlist name]',
+	name: 'playtop',
+	description: 'Enter a song as the next item up in the queue!',
+	usage: '#playtop [song]',
 	guildOnly: true,
 	cooldown: 3,
 	async execute(message) {
@@ -190,7 +190,10 @@ QUERY: ${chalk.cyan(`${currentQuery}`)}
 
 			await queue.set(message.guild.id, queueConstruct);
 			if (!playlistSongs.length) {
-				queueConstruct.songs.push(song);
+				const currentSong = queueConstruct.songs[0];
+				delete queueConstruct.songs[0];
+				serverQueue.songs.shift();
+				queueConstruct.songs.unshift(currentSong, song);
 			} else {
 				queueConstruct.songs = queueConstruct.songs.concat(playlistSongs);
 			}
@@ -209,7 +212,10 @@ QUERY: ${chalk.cyan(`${currentQuery}`)}
 				return message.reply(`You have reached the maximum number of songs to have in queue (**${queueLimit}**) :worried:`);
 			}
 			if (!playlistSongs.length) {
-				serverQueue.songs.push(song);
+				const currentSong = serverQueue.songs[0];
+				delete serverQueue.songs[0];
+				serverQueue.songs.shift();
+				serverQueue.songs.unshift(currentSong, song);
 				return message.channel.send(`**${song.title}** has been added to the queue! :monkey_face: :thumbup:`);
 			} else {
 				serverQueue.songs = serverQueue.songs.concat(playlistSongs);
