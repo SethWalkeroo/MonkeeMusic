@@ -16,7 +16,8 @@
 | bitrate | #bitrate [value (kps)] | Sets the bots bitrate. Will not go into effect until the next song. |
 | clean | #clean [number of messages] | clear messages from the text channel. |
 | clear | #clear | clear all songs from the current queue. |
-| help | #help | display a list of commands and their descriptions. |
+| clear | #clear | clear all songs from the current queue. |
+| duration | #duration [arg to see queue duration] | displays either the duration of the song playing or the duration of the current queue. |
 | loop | #loop [number of loops (infinite if not specified)] | loop the song that is currently playing. |
 | playing | #playing | display the song that is currently playing. |
 | play | #play [link or query (song name)] | play a specified song in the bot. |
@@ -26,6 +27,7 @@
 | resume | #resume | resume the song that is currently playing. |
 | queue | #queue | view all of the songs in the current queue. |
 | shuffle | #shuffle | shuffles all of the songs in the current queue. |
+| save | #save [name for playlist] | save the current queue as a playlist. |
 | skip | #skip | skip the song that is currently playing in the queue. |
 | stop | #stop | stop the audio stream and clear the queue. |
 | reverse | #reverse | reverses the order of the current song queue. |
