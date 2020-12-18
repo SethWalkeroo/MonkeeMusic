@@ -10,15 +10,17 @@
   "license": "ISC",
   "dependencies": {
     "@discordjs/opus": "^0.3.3",
+    "@types/node": "^14.14.14",
     "chalk": "^4.1.0",
     "convert-seconds": "^1.0.1",
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
     "ffmpeg-static": "^4.2.7",
-    "ffmpeg-stream": "^0.7.0",
+    "prism-media": "^1.2.3",
     "shuffle-array": "^1.0.1",
     "string-similarity": "^4.0.3",
-    "ytdl-core": "^4.1.7",
+    "ytdl-core": "^4.2.0",
+    "ytdl-core-discord": "^1.2.4",
     "ytsr": "^2.0.1"
   }
 }

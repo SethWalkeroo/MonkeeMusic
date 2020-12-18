@@ -73,13 +73,12 @@ module.exports = {
 		const queue = message.client.queue;
 		const serverQueue = queue.get(message.guild.id);
 
-		if (!song) {
-			return message.channel.send('There are no more songs left in the queue! :worried:');
-		}
+		if (!song) return;
 		const queueBitrate = serverQueue.bitrate;
-		const ID = ytdl.getVideoID(song.url);
+		let ID = ytdl.getVideoID(song.url);
+	
 		const dispatcher = await serverQueue.connection
-			.play(ytdl(ID, {filter: 'audioonly', quality: 'highestaudio', highWaterMark: 1<<25}), {bitrate: queueBitrate, highWaterMark: 1})
+			.play(ytdl(ID, {quality: 'highestaudio', highWaterMark: 1<<25}), {bitrate: queueBitrate, highWaterMark: 1})
 			.on('finish', () => {
 				if (!serverQueue.loop && serverQueue.numberOfLoops <= 0) {
 					serverQueue.songs.shift();
@@ -88,8 +87,7 @@ module.exports = {
 					serverQueue.numberOfLoops--;
 				}
 				this.play(message, serverQueue.songs[0]);
-			})
-			.on('error', error => console.error(error));
+			}).on('error', error => console.error(error));
 
 		await dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
 		if (!serverQueue.loop) {
@@ -111,7 +109,8 @@ module.exports = {
 								song = {
 									title: previousQuery.title,
 									url: previousQuery.url,
-									duration: previousQuery.duration
+									duration: previousQuery.duration,
+									isLivestream: previousQuery.isLivestream
 								};
 								playlistCache[`${firstLetter}`].push(song);
 								break;
@@ -148,7 +147,8 @@ module.exports = {
 							query: currentQuery,
 							title: songInfo.videoDetails.title,
 							url: songInfo.videoDetails.video_url,
-							duration: songInfo.videoDetails.lengthSeconds
+							duration: songInfo.videoDetails.lengthSeconds,
+							isLivestream: songInfo.videoDetails.isLive
 						};
 						playlistCache[`${firstLetter}`].push(song);
 						const data = JSON.stringify(playlistCache, null, 2);
@@ -165,7 +165,8 @@ QUERY: ${chalk.cyan(`${currentQuery}`)}
 					song = {
 						title: songInfo.videoDetails.title,
 						url: songInfo.videoDetails.video_url,
-						duration: songInfo.videoDetails.lengthSeconds
+						duration: songInfo.videoDetails.lengthSeconds,
+						isLivestream: songInfo.videoDetails.isLive
 					};
 				}
 			}

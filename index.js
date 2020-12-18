@@ -135,7 +135,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
     setTimeout(() => { // if 1 (you), wait five minutes
       if (!oldState.channel.members.size - 1) // if there's still 1 member, 
          oldState.channel.leave(); // leave
-     }, 100000); // (5 min in ms)
+     }, 500000); // (5 min in ms)
 });
 
 client.on('error', (error) => {

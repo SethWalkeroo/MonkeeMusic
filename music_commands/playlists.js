@@ -1,6 +1,5 @@
 const fs = require('fs');
 const chalk = require('chalk');
-const config = require('../config.json');
 const ytsr = require('ytsr');
 const ytdl = require('ytdl-core');
 const playlistLimit = 25;
