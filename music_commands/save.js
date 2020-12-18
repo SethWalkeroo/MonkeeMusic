@@ -3,7 +3,7 @@ const fs = require('fs');
 module.exports = {
 	name: 'save',
 	description: 'Saves the current queue as a playlist.',
-	usage: '#save [playlist name]',
+	usage: '[save [playlist name]',
 	guildOnly: true,
 	cooldown: 3,
 	async execute(message, args) {

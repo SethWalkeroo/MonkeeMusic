@@ -1,7 +1,7 @@
 module.exports = {
 	name: 'reverse',
 	description: 'Reverses the queue.',
-	usage: '#reverse',
+	usage: '[reverse',
 	guildOnly: true,
 	cooldown: 2,
 	execute(message) {

@@ -4,7 +4,7 @@ const fs = require('fs');
 module.exports = {
 	name: 'duration',
 	description: 'Display the duration of the current song, queue, or specified playlist.',
-	usage: '#duration, #duration queue, #duration [playlist name].',
+	usage: '[duration, #duration queue, ;duration [playlist name].',
 	guildOnly: true,
 	cooldown: 2,
 	execute(message, args) {

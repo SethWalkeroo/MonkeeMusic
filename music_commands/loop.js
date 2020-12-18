@@ -1,7 +1,7 @@
 module.exports = {
 	name: 'loop',
 	description: 'Loop the current song.',
-	usage: '#loop [number of loops (infinite if not set)]',
+	usage: '[loop [number of loops (infinite if not set)]',
 	guildOnly: true,
 	cooldown: 2,
 	execute(message, args) {

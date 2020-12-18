@@ -1,7 +1,7 @@
 module.exports = {
 	name: 'skipto',
 	description: 'Skip to a certain position in the queue.',
-	usage: '#skipto [position]',
+	usage: '[skipto [position]',
 	guildOnly: true,
 	cooldown: 2,
 	async execute(message, args) {

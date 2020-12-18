@@ -1,7 +1,7 @@
 module.exports = {
 	name: 'queue',
 	description: 'Display all of the songs in the current queue.',
-	usage: '#queue',
+	usage: '[queue',
 	guildOnly: true,
 	cooldown: 2,
 	execute(message) {

@@ -9,7 +9,7 @@ const queueLimit = 250;
 module.exports = {
 	name: 'play',
 	description: 'Play a song in your channel!',
-	usage: '#play [link or query (song name)] **_also_** #play [playlist] [playlist name]',
+	usage: '[play [link or query (song name)] **_also_** #play [playlist] [playlist name]',
 	guildOnly: true,
 	cooldown: 2,
 	async execute(message) {

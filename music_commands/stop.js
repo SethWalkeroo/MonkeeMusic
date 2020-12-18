@@ -1,7 +1,7 @@
 module.exports = {
 	name: 'stop',
 	description: 'Stop all songs in the queue and clears the queue.',
-	usage: '#stop',
+	usage: '[stop',
 	guildOnly: true,
 	cooldown: 2,
 	async execute(message) {

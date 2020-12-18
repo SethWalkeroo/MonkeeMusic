@@ -10,7 +10,7 @@ const queueLimit = 250;
 module.exports = {
 	name: 'playtop',
 	description: 'Enter a song as the next item up in the queue!',
-	usage: '#playtop [song]',
+	usage: '[playtop [song]',
 	guildOnly: true,
 	cooldown: 3,
 	async execute(message) {

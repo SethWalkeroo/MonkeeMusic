@@ -3,7 +3,7 @@ const fs = require('fs');
 module.exports = {
 	name: 'bitrate',
 	description: 'Adjust the bot\'s bitrate.',
-	usage: '#bitrate [value]',
+	usage: '[bitrate [value]',
 	guildOnly: true,
 	cooldown: 2,
 	async execute(message, args) {

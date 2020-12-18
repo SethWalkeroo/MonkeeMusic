@@ -2,7 +2,7 @@
 module.exports = {
 	name: 'join',
 	description: 'Allow the bot to join the voice channel.',
-	usage: '#join',
+	usage: '[join',
 	guildOnly: true,
 	cooldown: 2,
 	async execute(message) {

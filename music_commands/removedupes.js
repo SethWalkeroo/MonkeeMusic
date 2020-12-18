@@ -1,7 +1,7 @@
 module.exports = {
 	name: 'removedupes',
 	description: 'Remove all song duplicates from the current queue.',
-	usage: '#removedupes',
+	usage: '[removedupes',
 	guildOnly: true,
 	cooldown: 3,
 	execute(message) {

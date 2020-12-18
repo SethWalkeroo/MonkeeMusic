@@ -3,7 +3,7 @@ const shuffle = require('shuffle-array')
 module.exports = {
 	name: 'shuffle',
 	description: 'Shuffle the current queue.',
-	usage: '#shuffle',
+	usage: '[shuffle',
 	guildOnly: true,
 	cooldown: 2,
 	execute(message) {

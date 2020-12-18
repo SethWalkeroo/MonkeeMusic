@@ -1,7 +1,7 @@
 module.exports = {
 	name: 'leave',
 	description: 'Make the bot leave the voice channel.',
-	usage: '#leave',
+	usage: '[leave',
 	guildOnly: true,
 	cooldown: 2,
 	async execute(message) {

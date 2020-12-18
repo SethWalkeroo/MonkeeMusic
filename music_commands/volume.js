@@ -3,7 +3,7 @@ const fs = require('fs');
 module.exports = {
 	name: 'volume',
 	description: 'Change the server wide volume of the bot on a scale of 0 to 10.',
-	usage: '#volume [value between 0 and 10]',
+	usage: '[volume [value between 0 and 10]',
 	guildOnly: true,
 	cooldown: 3,
 	execute(message, args) {

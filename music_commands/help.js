@@ -3,7 +3,7 @@ const fs = require('fs')
 module.exports = {
 	name: 'help',
 	description: 'List all available music commands.',
-	usage: '#help',
+	usage: '[help',
 	guildOnly: true,
 	cooldown: 30,
 	async execute(message) {
@@ -46,12 +46,12 @@ module.exports = {
 		];
 
 		playlistUsages = [
-			'#playlists create [playlist name]',
-			'#playlists delete [playlist name]',
-			'#playlists add [playlist name] [link or query (song name)]',
-			'#playlists remove [playlist name] [song position]',
-			'#playlists show [playlist name]',
-			'#playlists all'
+			'[playlists create [playlist name]',
+			'[playlists delete [playlist name]',
+			'[playlists add [playlist name] [link or query (song name)]',
+			'[playlists remove [playlist name] [song position]',
+			'[playlists show [playlist name]',
+			'[playlists all'
 		];
 
 		playlistDescs = [

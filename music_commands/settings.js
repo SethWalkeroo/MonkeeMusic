@@ -3,7 +3,7 @@ const fs = require('fs');
 module.exports = {
 	name: 'settings',
 	description: 'View your bot settings for the server.',
-	usage: '#settings',
+	usage: '[settings',
 	guildOnly: true,
 	cooldown: 2,
 	async execute(message, args) {

@@ -10,7 +10,7 @@ const supportDiscord = 'https://discord.gg/z7uq2rh7bQ';
 module.exports = {
 	name: 'playlists',
 	description: 'Create a new playlist or add to an existing one.',
-	usage: '#playlists [command]',
+	usage: '[playlists [command]',
 	guildOnly: true,
 	cooldown: 2,
 	async execute(message, args) {

@@ -1,7 +1,7 @@
 module.exports = {
 	name: 'move',
 	description: 'Move a song to a different position in the queue.',
-	usage: '#move [current position] [desired position]',
+	usage: '[move [current position] [desired position]',
 	guildOnly: true,
 	cooldown: 2,
 	execute(message, args) {
