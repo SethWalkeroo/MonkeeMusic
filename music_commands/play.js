@@ -62,7 +62,7 @@ module.exports = {
 			}
 			
 			const song = await this.getSong(message, args, playlistSongs, playlistCache);
-			this.checkQueue(message, args, config, song, voiceChannel, queue, queueLimit, serverQueue, playlistSongs);
+			await this.checkQueue(message, args, config, song, voiceChannel, queue, queueLimit, serverQueue, playlistSongs);
 		} catch (error) {
 			console.log(error);
 			message.channel.send(error.message);
@@ -71,19 +71,15 @@ module.exports = {
 
 	async play(message, song) {
 		const queue = message.client.queue;
-		const guild = message.guild;
 		const serverQueue = queue.get(message.guild.id);
 
 		if (!song) {
-			message.channel.send('There are no more songs left in the queue! :worried:');
-			await serverQueue.voiceChannel.leave();
-			queue.delete(guild.id);
-			return;
+			return message.channel.send('There are no more songs left in the queue! :worried:');
 		}
 		const queueBitrate = serverQueue.bitrate;
-
-		const dispatcher = serverQueue.connection
-			.play(ytdl(song.url), {bitrate: queueBitrate})
+		const ID = ytdl.getVideoID(song.url);
+		const dispatcher = await serverQueue.connection
+			.play(ytdl(ID, {filter: 'audioonly', quality: 'highestaudio', highWaterMark: 1<<25}), {bitrate: queueBitrate, highWaterMark: 1})
 			.on('finish', () => {
 				if (!serverQueue.loop && serverQueue.numberOfLoops <= 0) {
 					serverQueue.songs.shift();
@@ -95,9 +91,9 @@ module.exports = {
 			})
 			.on('error', error => console.error(error));
 
-		dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
+		await dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
 		if (!serverQueue.loop) {
-			serverQueue.textChannel.send(`:monkey_face: :musical_note: Start playing: **${song.title}**`);
+			await serverQueue.textChannel.send(`:monkey_face: :musical_note: Start playing: **${song.title}**`);
 		}
 	},
 
@@ -199,7 +195,7 @@ QUERY: ${chalk.cyan(`${currentQuery}`)}
 			}
 
 			try {
-				var connection = await voiceChannel.join();
+				let connection = await voiceChannel.join();
 				queueConstruct.connection = connection;
 				this.play(message, queueConstruct.songs[0]);
 			} catch (err) {
@@ -208,10 +204,12 @@ QUERY: ${chalk.cyan(`${currentQuery}`)}
 				return message.channel.send(err);
 			}
 		} else {
-			if (serverQueue.songs.length >= queueLimit) {
+			if (!serverQueue.songs[0]) {
+				serverQueue.songs.push(song);
+				this.play(message, serverQueue.songs[0]);
+			} else if (serverQueue.songs.length >= queueLimit) {
 				return message.channel.send(`You have reached the maximum number of songs to have in queue (**${queueLimit}**) :worried:`);
-			}
-			if (!playlistSongs.length) {
+			} else if (!playlistSongs.length) {
 				serverQueue.songs.push(song);
 				return message.channel.send(`**${song.title}** has been added to the queue! :monkey_face: :thumbup:`);
 			} else {

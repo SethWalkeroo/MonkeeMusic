@@ -1,3 +1,4 @@
+
 module.exports = {
 	name: 'join',
 	description: 'Allow the bot to join the voice channel.',
@@ -8,7 +9,6 @@ module.exports = {
 		const voiceChannel = message.member.voice.channel;
 		if (!message.member.voice.channel) return message.channel.send('You have to be in a voice channel for the bot to join.');
 		await voiceChannel.join();
-		return message.channel.send('The bot has joined the voice channel! :monkey_face: :thumbup:');
 	},
 };
 

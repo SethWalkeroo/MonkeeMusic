@@ -8,6 +8,11 @@ module.exports = {
 		const serverQueue = message.client.queue.get(message.guild.id);
 		if (!message.member.voice.channel) return message.channel.send('You have to be in a voice channel to skip a song.');
 		if (!serverQueue) return message.channel.send('There is no song playing to skip.');
-		await serverQueue.connection.dispatcher.end();
+		try {
+			await serverQueue.connection.dispatcher.end();
+		} catch (error) {
+			console.log(error);
+			return message.channel.send('There is nothing to skip. Use #leave if you want the bot to leave.');
+		}
 	},
 };

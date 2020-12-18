@@ -10,8 +10,14 @@ module.exports = {
 		if (!serverQueue) {
 			return message.channel.send('There are no songs playing!');
 		}
-		serverQueue.songs = [];
-		await serverQueue.connection.dispatcher.end();
-		message.channel.send('The bot has stopped playing music! :thumbup:');
+		try {
+			serverQueue.songs = [];
+			await serverQueue.connection.dispatcher.end();
+		} catch (error) {
+			console.log(error);
+			return message.channel.send('There is nothing to stop. Use #leave if you want the bot to leave.');
+		}
+
+		return message.channel.send('The bot has stopped playing music! :thumbup:');
 	},
 };
