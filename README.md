@@ -20,6 +20,7 @@
 | clear | \[clear | clear all songs from the current queue. |
 | duration | \[duration, #duratin queue, #duration [playlist name] | displays either the duration of the song playing, the current queue, or a specified playlist. |
 | loop | \[loop [number of loops (infinite if not specified)] | loop the song that is currently playing. |
+| move | \[move [current position] [desired position] | move a song to a different position in the queue. |
 | playing | \[playing | display the song that is currently playing. |
 | play | \[play [link or query (song name)] | play a specified song in the bot. |
 | playtop | \[playtop [link or query (song name)] | add a song to the upcoming position in the queue. |
