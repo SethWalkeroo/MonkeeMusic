@@ -33,6 +33,7 @@
 | shuffle | \[shuffle | shuffles all of the songs in the current queue. |
 | save | \[save [name for playlist] | save the current queue as a playlist. |
 | settings | \[settings | show the server specific config of the bot. |
+| silence | \[silence | Toggle the bot to only use reactions for certain commands. Error messages and certain messages will still send. |
 | skip | \[skip | skip the song that is currently playing in the queue. |
 | stop | \[stop | stop the audio stream and clear the queue. |
 | reverse | \[reverse | reverses the order of the current song queue. |
