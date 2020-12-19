@@ -18,7 +18,7 @@
 | clean | \[clean [number of messages] | clear messages from the text channel. |
 | clear | \[clear | clear all songs from the current queue. |
 | clear | \[clear | clear all songs from the current queue. |
-| duration | \[duration, #duratin queue, #duration [playlist name] | displays either the duration of the song playing, the current queue, or a specified playlist. |
+| duration | \[duration, #duration queue, #duration [playlist name] | displays either the duration of the song playing, the current queue, or a specified playlist. |
 | loop | \[loop [number of loops (infinite if not specified)] | loop the song that is currently playing. |
 | move | \[move [current position] [desired position] | move a song to a different position in the queue. |
 | pause | \[pause | pause the song that is currently playing. |
