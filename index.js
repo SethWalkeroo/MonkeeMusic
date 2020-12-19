@@ -45,26 +45,8 @@ GUILD-ID: ${chalk.green(`${guild.id}`)}
 
 client.on("guildCreate", (guild) => {
 
-	const playlistFileExists = fs.existsSync(`./music_data/${message.guild.id}.json`);
-	if (!playlistFileExists) {
-		const playlistFiles = fs.readdirSync('./music_data').filter(file => file.endsWith('.json'));
-		let localPlaylistLocation = `./music_data/${guild.id}.json`;
-		if (!playlistFiles.includes(`${guild.id}.json`)) {
-			fs.writeFileSync(localPlaylistLocation, '{}');
-		}
-	}
-
-	const configFileExists = fs.existsSync(`./server_configs/${guild.id}.json`);
-	if (!configFileExists) {
-		const configFiles = fs.readdirSync('./server_configs').filter(file => file.endsWith('.json'));
-		let localConfigLocation = `./server_configs/${guild.id}.json`;
-		if (!configFiles.includes(`${guild.id}.json`)) {
-			delete config.token;
-			delete config.playlistLocation;
-			fs.writeFileSync(localConfigLocation, JSON.stringify(config, null, 2));
-		}
-	}
-
+	// function to generate server specific config file and playlist file if they dont already exist.
+	generateServerFiles(guild);
 
 	console.log(`
 ${chalk.magenta('JOINED NEW SERVER!')}
@@ -83,6 +65,8 @@ client.once('disconnect', () => {
 
 
 client.on('message', async (message) => {
+	
+	generateServerFiles(message.guild);
 
 	const rawData = fs.readFileSync(`./server_configs/${message.guild.id}.json`);
 	const customConfig = JSON.parse(rawData);
@@ -155,6 +139,29 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 client.on('error', (error) => {
 	console.log(error);
 });
+
+function generateServerFiles(guild) {
+
+	const playlistFileExists = fs.existsSync(`./music_data/${guild.id}.json`);
+	if (!playlistFileExists) {
+		const playlistFiles = fs.readdirSync('./music_data').filter(file => file.endsWith('.json'));
+		let localPlaylistLocation = `./music_data/${guild.id}.json`;
+		if (!playlistFiles.includes(`${guild.id}.json`)) {
+			fs.writeFileSync(localPlaylistLocation, '{}');
+		}
+	}
+
+	const configFileExists = fs.existsSync(`./server_configs/${guild.id}.json`);
+	if (!configFileExists) {
+		const configFiles = fs.readdirSync('./server_configs').filter(file => file.endsWith('.json'));
+		let localConfigLocation = `./server_configs/${guild.id}.json`;
+		if (!configFiles.includes(`${guild.id}.json`)) {
+			delete config.token;
+			delete config.playlistLocation;
+			fs.writeFileSync(localConfigLocation, JSON.stringify(config, null, 2));
+		}
+	}
+}
 
 
 client.login(token);

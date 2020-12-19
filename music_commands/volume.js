@@ -28,8 +28,12 @@ module.exports = {
 
 		const data = JSON.stringify(config, null, 2);
 		fs.writeFile(configLocation, data, (err) => {
-		    if (err) throw err;
-		    message.channel.send(`The bot volume is now set to ${amount}! :monkey_face: :thumbup:`);
+			if (err) throw err;
+			if (!message.client.config.silent) {
+				message.channel.send(`The bot volume is now set to **${amount}**! :monkey_face: :thumbup:`);
+			} else {
+				message.react('👍');
+			}
 		});
 	},
 };

@@ -14,7 +14,7 @@ module.exports = {
 		if (!message.client.config.silent) {
 			await message.channel.send('The bot has resumed playing music! :monkey_face: :thumbup:');
 		} else  {
-			await message.react('⏯️');
+			message.react('▶️');
 		}
 
 	},

@@ -95,7 +95,6 @@ module.exports = {
 			if (!message.client.config.silent) {
 				await message.channel.send(`:monkey_face: :musical_note:  Start playing: **${song.title}**`);
 			} else {
-				message.react('▶️');
 				message.react('🎵');
 			}
 		}
@@ -215,23 +214,21 @@ QUERY: ${chalk.cyan(`${currentQuery}`)}
 				serverQueue.songs.push(song);
 				this.play(message, serverQueue.songs[0]);
 			} else if (serverQueue.songs.length >= queueLimit) {
-				return await message.channel.send(`You have reached the maximum number of songs to have in queue (**${queueLimit}**) :worried:`);
+				await message.channel.send(`You have reached the maximum number of songs to have in queue (**${queueLimit}**) :worried:`);
 			} else if (!playlistSongs.length) {
 				serverQueue.songs.push(song);
 				if (!message.client.config.silent) {
-					return await message.channel.send(`**${song.title}** has been added to the queue! :monkey_face: :thumbup:`);
+					await message.channel.send(`**${song.title}** has been added to the queue! :monkey_face: :thumbup:`);
 				} else {
 					message.react('➕');
-					return await message.react('🎵');
 				}
 
 			} else {
 				serverQueue.songs = serverQueue.songs.concat(playlistSongs);
 				if (!message.client.config.silent) {
-					return await message.channel.send(`The **${args[2]}** playlist has been added to the queue! :monkey_face: :thumbup:`);
+					await message.channel.send(`The **${args[2]}** playlist has been added to the queue! :monkey_face: :thumbup:`);
 				} else {
-					message.react('➕');
-					return await message.react('🎵');
+					await message.react('➕');
 				}
 
 			}
