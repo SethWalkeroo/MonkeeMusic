@@ -16,8 +16,8 @@ module.exports = {
 		const amount = parseInt(args[0]);
 		if (isNaN(amount)) {
 			return await message.channel.send('Please enter a valid bitrate amount.');
-		} else if (amount <= 0 || amount > 128) {
-			return await message.channel.send('Please enter a value between 0 and 128 kps.');
+		} else if (amount <= 0 || amount > 180) {
+			return await message.channel.send('Please enter a value between 0 and 180 kps.');
 		}
 		if (serverQueue) {
 			serverQueue.bitrate = amount;

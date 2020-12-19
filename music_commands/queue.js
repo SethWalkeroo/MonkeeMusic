@@ -7,20 +7,21 @@ module.exports = {
 	async execute(message) {
 		const serverQueue = message.client.queue.get(message.guild.id)
 		if (!serverQueue) {
-			return await message.channel.send('There are no songs in queue at the moment.');
+			return await message.channel.send('```The queue is empty 😟```');
 		} else if (!serverQueue.songs.length) {
-			return await message.channel.send('There are no songs in queue at the moment.');
+			return await message.channel.send('```The queue is empty 😟```');
 		}
 		let result = ''
 		let count = 1
 		for (song of serverQueue.songs) {
 			if (count === 1) {
-				result += `**Currently playing:** ${song.title}\n`;
+				result += `1: ${song.title} (currently playing)\n`;
 			} else {
-				result += `**${count}:** ${song.title}\n`;
+				result += `${count}: ${song.title}\n`;
 			}
 			count += 1;
 		}
-		await message.channel.send(result);
+		let backticks = '```';
+		await message.channel.send(`${backticks}${result}${backticks}`);
 	},
 };

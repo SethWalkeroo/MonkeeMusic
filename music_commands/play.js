@@ -3,7 +3,8 @@ const ytsr = require('ytsr');
 const stringSimilarity = require('string-similarity');
 const fs = require('fs');
 const chalk = require('chalk');
-const { MessageAttachment } = require('discord.js');
+const convert = require('convert-seconds');
+const Discord = require('discord.js');
 const cacheLocation = '../MonkeeMusic/music_data/query_cache.json'
 const queueLimit = 250;
 
@@ -93,7 +94,23 @@ module.exports = {
 		await dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
 		if (!serverQueue.loop) {
 			if (!message.client.config.silent) {
-				await message.channel.send(`:monkey_face: :musical_note:  Start playing: **${song.title}**`);
+				let songDuration = song.duration;
+				if (song.isLivestream) {
+					songDuration = '∞'
+				} else {
+					songDuration = convert(parseInt(song.duration));
+				}
+				const songEmbed = new Discord.MessageEmbed()
+				.setColor('#FF0000')
+				.setTitle('Now Playing')
+				.setURL(song.url)
+				.setThumbnail(song.thumbnail)
+				.addFields(
+					{ name: 'Song Title', value: song.title},
+					{ name: 'Channel', value: song.channel, inline: true },
+					{ name: 'Song Duration', value: `${songDuration.hours}:${songDuration.minutes}:${songDuration.seconds}`, inline: true},
+				);
+				await message.channel.send(songEmbed);
 			} else {
 				message.react('🎵');
 			}
@@ -113,6 +130,8 @@ module.exports = {
 								console.log(chalk.green(`MATCHING QUERY FOUND! for ${chalk.yellow(currentQuery)}`));
 								song = {
 									title: previousQuery.title,
+									channel: previousQuery.channel,
+									thumbnail: previousQuery.thumbnail,
 									url: previousQuery.url,
 									duration: previousQuery.duration,
 									isLivestream: previousQuery.isLivestream
@@ -147,10 +166,13 @@ module.exports = {
 								}
 							}
 						}
+
 						const songInfo = await ytdl.getInfo(videoId);
 						song = {
 							query: currentQuery,
 							title: songInfo.videoDetails.title,
+							channel: songInfo.videoDetails.author.name,
+							thumbnail: songInfo.videoDetails.thumbnails[0].url,
 							url: songInfo.videoDetails.video_url,
 							duration: songInfo.videoDetails.lengthSeconds,
 							isLivestream: songInfo.videoDetails.isLive
@@ -169,6 +191,8 @@ QUERY: ${chalk.cyan(`${currentQuery}`)}
 					const songInfo = await ytdl.getInfo(videoId);
 					song = {
 						title: songInfo.videoDetails.title,
+						channel: songInfo.videoDetails.author.name,
+						thumbnail: songInfo.videoDetails.thumbnails[0].url,
 						url: songInfo.videoDetails.video_url,
 						duration: songInfo.videoDetails.lengthSeconds,
 						isLivestream: songInfo.videoDetails.isLive

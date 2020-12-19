@@ -10,7 +10,7 @@ module.exports = {
         let config = message.client.config;
         if (config.silent) {
             config.silent = false;
-            message.channel.send(':monkey_face: :loudspeaker: The bot has been unsilenced! ')
+            message.channel.send(':monkey_face: :loudspeaker: _The bot has been unsilenced!_ ')
         } else {
             message.react('🤫');
             config.silent = true;
