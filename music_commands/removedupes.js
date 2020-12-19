@@ -18,7 +18,7 @@ module.exports = {
             }
         }
         serverQueue.songs = uniqueSongs;
-        if (!message.clinet.config.silent) {
+        if (!message.client.config.silent) {
            await  message.channel.send('All duplicate songs have been removed from the current queue! :monkey_face: :thumbup:');
         } else {
             await message.react('👍');
