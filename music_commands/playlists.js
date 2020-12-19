@@ -38,18 +38,18 @@ module.exports = {
 				playlists_delete(message, playlists, playlistsLocation, args);
 				break;
 			default:
-				message.channel.send('Invalid playlist command.');
+				await message.channel.send('Invalid playlist command.');
 		}
 	},
 };
 
 async function playlists_add(message, playlists, playlistsLocation, args) {
 	if (!args[1]) {
-		message.channel.send('Please specify which playlist you want to add the song to.');
+		await message.channel.send('Please specify which playlist you want to add the song to.');
 	} else {
 		let videoId = args[2];
 		if (!videoId) {
-			return message.channel.send('Please make sure to specify a song to add to the playlist.');
+			return await message.channel.send('Please make sure to specify a song to add to the playlist.');
 		}
 
 		let playlistName = null;
@@ -60,11 +60,11 @@ async function playlists_add(message, playlists, playlistsLocation, args) {
 			}
 		}
 		if (!playlistName) {
-			return message.channel.send('Sorry, that playlist doesn\'t seem to exist.');
+			return await message.channel.send('Sorry, that playlist doesn\'t seem to exist.');
 		}
 
 		if (playlists[`${playlistName}`].length >= songLimit) {
-			return message.channel.send(
+			return await message.channel.send(
 `You have reached the song limit of **${songLimit}** for the **${playlistName}** playlist!
  If you actually need more songs for your playlist, join the support discord **${supportDiscord}** for help.
  Or you can contact me via email at **sethrobertwalker@gmail.com**`
@@ -82,7 +82,7 @@ async function playlists_add(message, playlists, playlistsLocation, args) {
 			console.log(chalk.red(`${message.author.username} tried to add ${query} to a playlist`));
 			const results = await ytsr(query, {limit: 1, pages: 1});
 			if (!results.items.length) {
-				return message.channel.send('Sorry, I could not find a result matching that query! :worried:');
+				return await message.channel.send('Sorry, I could not find a result matching that query! :worried:');
 			}
 			videoId = await results.items[0].id;
 			let itemsIndex = 1;
@@ -116,7 +116,7 @@ async function playlists_create(message, playlists, playlistsLocation, args) {
 		count += 1;
 	}
 	if (count >= playlistLimit) {
-		return message.channel.send(
+		return await message.channel.send(
 `This server has reached the playlist limit of **${playlistLimit}**
  If you actually need more playlists join the support discord **${supportDiscord}** for help.
  You can also contact me via email at **sethrobertwalker@gmail.com**`
@@ -124,14 +124,14 @@ async function playlists_create(message, playlists, playlistsLocation, args) {
 	}
 
 	if (!args[1]) {
-		message.channel.send('Please provide a name when creating a playlist!');
+		await message.channel.send('Please provide a name when creating a playlist!');
 	} else if (args.length > 2) {
-		message.channel.send('Please provide a playlist name that does not contain spaces.');
+		await message.channel.send('Please provide a playlist name that does not contain spaces.');
 	} else {
 		playlistName = args[1];
 		for (playlist in playlists) {
 			if (playlist == playlistName) {
-				return message.channel.send('That playlist already exists! Try a different name or delete the old playlist.');
+				return await message.channel.send('That playlist already exists! Try a different name or delete the old playlist.');
 			}
 		}
 		playlists[`${playlistName}`] = [];
@@ -149,11 +149,11 @@ LOCATION: ${chalk.green(`${playlistsLocation}`)}
 	}
 }
 
-function playlists_show(message, playlists, args) {
+async function playlists_show(message, playlists, args) {
 	const playlistName = args[1];
 	const songs = playlists[`${playlistName}`];
 	if (!songs) {
-		return message.channel.send('That playlist does not exist.');
+		return await message.channel.send('That playlist does not exist.');
 	}
 	let results = '';
 	let count = 1;
@@ -161,7 +161,7 @@ function playlists_show(message, playlists, args) {
 		results += `**${count}:**  ${song.title}\n`;
 		count++;
 	}
-	message.channel.send(results);
+	await message.channel.send(results);
 }
 
 async function playlists_remove(message, playlists, playlistsLocation, args) {
@@ -169,7 +169,7 @@ async function playlists_remove(message, playlists, playlistsLocation, args) {
 	const songPosition = parseInt(args[2] - 1);
 	let songs = playlists[`${playlistName}`];
 	if (!songs) {
-		return message.channel.send('That playlist does not exist!');
+		return await message.channel.send('That playlist does not exist!');
 	}
 	delete playlists[`${playlistName}`][songPosition];
 	for (song of playlists[`${playlistName}`]) {
@@ -193,9 +193,9 @@ async function playlists_remove(message, playlists, playlistsLocation, args) {
 	});
 }
 
-function playlists_all(message, playlists) {
+async function playlists_all(message, playlists) {
 	if (JSON.stringify(playlists) === '{}') {
-		return message.channel.send('There are currently no playlists created for this server.');
+		return await message.channel.send('There are currently no playlists created for this server.');
 	}
 	let count = 1;
 	let result = '';
@@ -203,7 +203,7 @@ function playlists_all(message, playlists) {
 		result += `**${count}:** ${playlist}\n`;
 		count++;
 	}
-	message.channel.send(result);
+	await message.channel.send(result);
 }
 
 async function playlists_delete(message, playlists, playlistsLocation, args) {

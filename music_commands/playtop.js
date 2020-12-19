@@ -44,7 +44,7 @@ module.exports = {
 				const data = fs.readFileSync(playlistsLocation);
 				const playlists = await JSON.parse(data);
 				if (!args[2]) {
-					return message.channel.send('Please specify which playlist you would like to add!');
+					return await message.channel.send('Please specify which playlist you would like to add!');
 				}
 				for (playlist in playlists) {
 					if (args[2] === playlist) {
@@ -62,17 +62,17 @@ module.exports = {
 			this.checkQueue(message, args, song, voiceChannel, queue, queueLimit, serverQueue, playlistSongs);
 		} catch (error) {
 			console.log(error);
-			message.channel.send(error.message);
+			await message.channel.send(error.message);
 		}
 	},
 
-	play(message, song) {
+	async play(message, song) {
 		const queue = message.client.queue;
 		const guild = message.guild;
 		const serverQueue = queue.get(message.guild.id);
 
 		if (!song) {
-			serverQueue.voiceChannel.leave();
+			await serverQueue.voiceChannel.leave();
 			queue.delete(guild.id);
 			return;
 		}
@@ -93,7 +93,7 @@ module.exports = {
 
 		dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
 		if (!serverQueue.loop) {
-			serverQueue.textChannel.send(`:monkey_face: :musical_note: Start playing: **${song.title}**`);
+			await message.channel.send(`:monkey_face: :musical_note: Start playing: **${song.title}**`);
 		}
 	},
 
@@ -133,7 +133,7 @@ module.exports = {
 								
 								const results = await ytsr(currentQuery, {limit: 1, pages: 1});
 								if (!results.items.length) {
-									return message.channel.send('Sorry, I could not find a result matching that query! :worried:');
+									return await message.channel.send('Sorry, I could not find a result matching that query! :worried:');
 								}
 								videoId = results.items[0].id;
 								let itemsIndex = 1;
@@ -204,21 +204,21 @@ QUERY: ${chalk.cyan(`${currentQuery}`)}
 			} catch (err) {
 				console.log(err);
 				queue.delete(message.guild.id);
-				return message.channel.send(err);
+				return await message.channel.send(err);
 			}
 		} else {
 			if (serverQueue.songs.length >= queueLimit) {
-				return message.channel.send(`You have reached the maximum number of songs to have in queue (**${queueLimit}**) :worried:`);
+				return await message.channel.send(`You have reached the maximum number of songs to have in queue (**${queueLimit}**) :worried:`);
 			}
 			if (!playlistSongs.length) {
 				const currentSong = serverQueue.songs[0];
 				delete serverQueue.songs[0];
 				serverQueue.songs.shift();
 				serverQueue.songs.unshift(currentSong, song);
-				return message.channel.send(`**${song.title}** has been added to the queue! :monkey_face: :thumbup:`);
+				return await message.channel.send(`**${song.title}** has been added to the queue! :monkey_face: :thumbup:`);
 			} else {
 				serverQueue.songs = serverQueue.songs.concat(playlistSongs);
-				return message.channel.send(`The **${args[2]}** playlist has been added to the queue! :monkey_face: :thumbup:`);
+				return await message.channel.send(`The **${args[2]}** playlist has been added to the queue! :monkey_face: :thumbup:`);
 			}
 
 		}

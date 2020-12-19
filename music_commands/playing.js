@@ -4,9 +4,9 @@ module.exports = {
 	usage: '[playing',
 	guildOnly: true,
 	cooldown: 2,
-	execute(message) {
+	async execute(message) {
 		const serverQueue = message.client.queue.get(message.guild.id);
-		if (!serverQueue) return message.channel.send('There is nothing playing.');
-		return message.channel.send(`:monkey_face: :musical_note: Now playing: **${serverQueue.songs[0].title}**`);
+		if (!serverQueue) return await message.channel.send('There is nothing playing.');
+		await message.channel.send(`:monkey_face: :musical_note: Now playing: **${serverQueue.songs[0].title}**`);
 	},
 };

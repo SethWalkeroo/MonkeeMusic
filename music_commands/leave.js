@@ -7,9 +7,14 @@ module.exports = {
 	async execute(message) {
 		const serverQueue = message.client.queue.get(message.guild.id);
 		if (!message.member.voice.channel) return message.channel.send('You have to be in a voice channel to stop the music.');
-		if (!serverQueue) {
+		if (!serverQueue || !serverQueue.connection.dispatcher) {
 			try {
-				return await message.member.voice.channel.leave();
+				await message.member.voice.channel.leave();
+				if (!message.client.config.silent) {
+					return message.channel.send('The bot has left the voice channel! :monkey_face: :thumbup:');
+				} else {
+					return message.react('🍃');
+				}
 			}
 			catch (error) {
 				console.log(error);
@@ -24,6 +29,11 @@ module.exports = {
 		}
 		message.client.queue.delete(message.guild.id);
 		await message.member.voice.channel.leave();
-		message.channel.send('The bot has left the voice channel! :monkey_face: :thumbup:');
+		if (!message.client.config.silent) {
+			message.channel.send('The bot has left the voice channel! :monkey_face: :thumbup:');
+		} else {
+			message.react('🍃');
+		}
+
 	},
 };

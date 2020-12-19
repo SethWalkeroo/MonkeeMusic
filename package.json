@@ -19,7 +19,7 @@
     "prism-media": "^1.2.3",
     "shuffle-array": "^1.0.1",
     "string-similarity": "^4.0.3",
-    "ytdl-core": "^4.2.0",
+    "ytdl-core": "^4.2.1",
     "ytdl-core-discord": "^1.2.4",
     "ytsr": "^2.0.1"
   }

@@ -6,11 +6,16 @@ module.exports = {
 	cooldown: 2,
 	async execute(message) {
 		const serverQueue = message.client.queue.get(message.guild.id);
-		if (!message.member.voice.channel) return message.channel.send('You have to be in a voice channel to pause the music.');
-		if (!serverQueue) return message.channel.send('There is nothing to resume!');
+		if (!message.member.voice.channel) return await message.channel.send('You have to be in a voice channel to pause the music.');
+		if (!serverQueue) return await message.channel.send('There is nothing to resume!');
+		if (!serverQueue.connection.dispatcher) return await message.channel.send('There is nothing to resume!');
 		const player = serverQueue.connection.dispatcher;
 		await player.resume();
-		return message.channel.send('The bot has resumed playing music! :monkey_face: :thumbup:');
+		if (!message.client.config.silent) {
+			await message.channel.send('The bot has resumed playing music! :monkey_face: :thumbup:');
+		} else  {
+			await message.react('⏯️');
+		}
 
 	},
 };

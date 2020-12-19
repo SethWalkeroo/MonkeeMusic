@@ -3,12 +3,11 @@ const chalk = require('chalk');
 const Discord = require('discord.js');
 const Client = require('./client/Client');
 const config = require('./config.json');
-const { Console } = require('console');
-const prefix = config.prefix;
 const token = config.token;
 
 const client = new Client();
 client.commands = new Discord.Collection();
+client.config = config;
 const cooldowns = new Discord.Collection();
 
 const musicCommandFiles = fs.readdirSync('./music_commands').filter(file => file.endsWith('.js'));
@@ -27,10 +26,13 @@ const commandsWithArgs = [
 	'save',
 	'duration',
 	'skipto',
-	'move'
+	'move',
+	'prefix'
 ];
 
 client.once('ready', async () => {
+	const prefix = config.prefix;
+	client.user.setActivity(`prefix: ${prefix} | ${prefix}help`, { type: 'WATCHING' });
 	console.log(chalk.green('Connected to Discord!'));
 	client.guilds.cache.forEach(guild => {
 		console.log(`
@@ -42,6 +44,28 @@ GUILD-ID: ${chalk.green(`${guild.id}`)}
 });
 
 client.on("guildCreate", (guild) => {
+
+	const playlistFileExists = fs.existsSync(`./music_data/${message.guild.id}.json`);
+	if (!playlistFileExists) {
+		const playlistFiles = fs.readdirSync('./music_data').filter(file => file.endsWith('.json'));
+		let localPlaylistLocation = `./music_data/${guild.id}.json`;
+		if (!playlistFiles.includes(`${guild.id}.json`)) {
+			fs.writeFileSync(localPlaylistLocation, '{}');
+		}
+	}
+
+	const configFileExists = fs.existsSync(`./server_configs/${guild.id}.json`);
+	if (!configFileExists) {
+		const configFiles = fs.readdirSync('./server_configs').filter(file => file.endsWith('.json'));
+		let localConfigLocation = `./server_configs/${guild.id}.json`;
+		if (!configFiles.includes(`${guild.id}.json`)) {
+			delete config.token;
+			delete config.playlistLocation;
+			fs.writeFileSync(localConfigLocation, JSON.stringify(config, null, 2));
+		}
+	}
+
+
 	console.log(`
 ${chalk.magenta('JOINED NEW SERVER!')}
 GUILD-NAME: ${chalk.yellow(`${guild.name}`)}
@@ -57,23 +81,13 @@ client.once('disconnect', () => {
   console.log('Disconnect!');
 });
 
-client.on('message', async (message, guild) => {
 
-	const playlistFiles = fs.readdirSync('./music_data').filter(file => file.endsWith('.json'));
-	let localPlaylistLocation = `./music_data/${message.guild.id}.json`;
-	if (!playlistFiles.includes(`${message.guild.id}.json`)) {
-		fs.writeFileSync(localPlaylistLocation, '{}');
-	}
+client.on('message', async (message) => {
 
-	const configFiles = fs.readdirSync('./server_configs').filter(file => file.endsWith('.json'));
-	let localConfigLocation = `./server_configs/${message.guild.id}.json`;
-	if (!configFiles.includes(`${message.guild.id}.json`)) {
-		delete config.token;
-		delete config.playlistLocation;
-		fs.writeFileSync(localConfigLocation, JSON.stringify(config, null, 2));
-	}
-
-
+	const rawData = fs.readFileSync(`./server_configs/${message.guild.id}.json`);
+	const customConfig = JSON.parse(rawData);
+	client.config = customConfig;
+	const prefix = customConfig.prefix;
 
 	const args = message.content.slice(prefix.length).split(/ +/);
 	const commandName = args.shift().toLowerCase();
@@ -83,11 +97,11 @@ client.on('message', async (message, guild) => {
 	if (!message.content.startsWith(prefix)) return;
 
 	if (!command) {
-		return message.reply('Sorry, that was an invalid command.');
+		return await message.reply('Sorry, that was an invalid command.');
 	}
 
 	if (command.guildOnly && message.channel.type === 'dm') {
-		return message.reply('I can\'t execute that command inside DMs!');
+		return await message.reply('I can\'t execute that command inside DMs!');
 	}
 
 	if (!cooldowns.has(command.name)) {
@@ -113,7 +127,7 @@ client.on('message', async (message, guild) => {
 	try {
 		if (commandsWithArgs.includes(commandName)) {
 			if (!args) {
-				return message.reply('You did not specify any arguments!');
+				return await message.reply('You did not specify any arguments!');
 			}
 			command.execute(message, args);
 		} else {

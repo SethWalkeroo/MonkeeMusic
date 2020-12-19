@@ -7,7 +7,7 @@ module.exports = {
 	cooldown: 2,
 	async execute(message) {
 		const voiceChannel = message.member.voice.channel;
-		if (!message.member.voice.channel) return message.channel.send('You have to be in a voice channel for the bot to join.');
+		if (!message.member.voice.channel) return await message.channel.send('You have to be in a voice channel for the bot to join.');
 		await voiceChannel.join();
 	},
 };

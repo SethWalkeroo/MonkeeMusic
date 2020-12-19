@@ -4,12 +4,12 @@ module.exports = {
 	usage: '[queue',
 	guildOnly: true,
 	cooldown: 2,
-	execute(message) {
+	async execute(message) {
 		const serverQueue = message.client.queue.get(message.guild.id)
 		if (!serverQueue) {
-			return message.channel.send('There are no songs in queue at the moment.');
+			return await message.channel.send('There are no songs in queue at the moment.');
 		} else if (!serverQueue.songs.length) {
-			return message.channel.send('There are no songs in queue at the moment.');
+			return await message.channel.send('There are no songs in queue at the moment.');
 		}
 		let result = ''
 		let count = 1
@@ -21,6 +21,6 @@ module.exports = {
 			}
 			count += 1;
 		}
-		message.channel.send(result);
+		await message.channel.send(result);
 	},
 };

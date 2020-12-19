@@ -5,17 +5,21 @@ module.exports = {
 	description: 'Change the command prefix for the bot.',
 	usage: '[prefix',
 	guildOnly: true,
-	cooldown: 10,
+	cooldown: 3,
 	async execute(message, args) {
+        const configLocation = `./server_configs/${message.guild.id}.json`
+        const rawData = fs.readFileSync(configLocation);
+        let customConfig = JSON.parse(rawData);
         if (!args[0]) {
-            return message.channel.send('Please provide a new prefix to change to!');
+            const prefix = customConfig.prefix;
+            return message.channel.send(
+                `Current prefix: **${prefix}**
+                \nType **${prefix}prefix [new prefix]** to change the command prefix. :monkey_face:`
+            );
         }
         const newPrefix = args[0];
-        const configLocation = `./server_configs/${message.guild.id}.json`
-        let rawData = fs.readFileSync(configLocation);
-        let customConfig = JSON.parse(rawData);
         customConfig.prefix = newPrefix;
-        const newConfig = JSON.stringify(customConfig);
+        const newConfig = JSON.stringify(customConfig, null, 2);
         fs.writeFile(configLocation, newConfig, (err) => {
 		    if (err) throw err;
 		    message.channel.send(`Command prefix has been changed to **${newPrefix}**`);

@@ -6,20 +6,20 @@ module.exports = {
 	usage: '[volume [value between 0 and 10]',
 	guildOnly: true,
 	cooldown: 3,
-	execute(message, args) {
+	async execute(message, args) {
 		const configLocation = `../MonkeeMusic/server_configs/${message.guild.id}.json`;
 		const rawData = fs.readFileSync(configLocation);
 		let config = JSON.parse(rawData);
 		const serverQueue = message.client.queue.get(message.guild.id);
 
-		if (!message.member.voice.channel) return message.channel.send('You have to be in a voice channel to change the bot volume!');
-		if (!serverQueue) return message.channel.send('The bot needs to be playing in order to change the volume!');
+		if (!message.member.voice.channel) return await message.channel.send('You have to be in a voice channel to change the bot volume!');
+		if (!serverQueue) return await message.channel.send('The bot needs to be playing in order to change the volume!');
 		const amount = parseInt(args[0]);
 
 		if (isNaN(amount)) {
-			return message.channel.send('That doesn\'t seem to be a valid number.');
+			return await message.channel.send('That doesn\'t seem to be a valid number.');
 		} else if (amount < 0 || amount > 10) {
-			return message.channel.send('You need to input a decimal value between 0 and 10.');
+			return await message.channel.send('You need to input a decimal value between 0 and 10.');
 		}
 
 		serverQueue.volume = amount;

@@ -7,9 +7,8 @@ module.exports = {
 	async execute(message) {
 		const serverQueue = message.client.queue.get(message.guild.id);
 		if (!message.member.voice.channel) return message.channel.send('You have to be in a voice channel to stop the music.');
-		if (!serverQueue) {
-			return message.channel.send('There are no songs playing!');
-		}
+		if (!serverQueue) return message.channel.send('There are no songs playing!');
+		if (!serverQueue.connection.dispatcher) return message.channel.send('There are no songs playing!');
 		try {
 			serverQueue.songs = [];
 			await serverQueue.connection.dispatcher.end();
@@ -18,6 +17,10 @@ module.exports = {
 			return message.channel.send('There is nothing to stop. Use #leave if you want the bot to leave.');
 		}
 
-		return message.channel.send('The bot has stopped playing music! :thumbup:');
+		if (!message.client.config.silent) {
+			message.channel.send('The bot has stopped playing music! :thumbup:');
+		} else {
+			message.react('🛑');
+		}
 	},
 };

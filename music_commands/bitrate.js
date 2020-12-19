@@ -7,18 +7,16 @@ module.exports = {
 	guildOnly: true,
 	cooldown: 2,
 	async execute(message, args) {
-		const configLocation = `../MonkeeMusic/server_configs/${message.guild.id}.json`;
-		const rawData = fs.readFileSync(configLocation);
-		let config = JSON.parse(rawData);
+		let config = message.client.config;
 		const serverQueue = message.client.queue.get(message.guild.id);
 
-		if (!serverQueue) return message.channel.send('The bot needs to be playing to edit the bitrate!');
-		if (!args[0]) return message.reply('Please specify a value for the bitrate!')
+		if (!serverQueue) return await message.channel.send('The bot needs to be playing to edit the bitrate!');
+		if (!args[0]) return await message.reply('Please specify a value for the bitrate!')
 		const amount = parseInt(args[0]);
 		if (isNaN(amount)) {
-			return message.reply('Please enter a valid bitrate amount.');
+			return await message.reply('Please enter a valid bitrate amount.');
 		} else if (amount <= 0) {
-			return message.reply('Please enter a value greater than 0.');
+			return await message.reply('Please enter a value greater than 0.');
 		}
 		serverQueue.bitrate = amount;
 		config.bitrate = amount;

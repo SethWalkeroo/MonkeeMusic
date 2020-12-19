@@ -75,9 +75,9 @@ module.exports = {
 		}
 
 		await message.channel.send(commands);
-		message.channel.send(commands2);
-		message.channel.send(`${commandBoarder2}\n**${title2}** :monkey_face:\n${commandBoarder2}\n`);
-		message.channel.send(commandsTwo);
+		await message.channel.send(commands2);
+		await message.channel.send(`${commandBoarder2}\n**${title2}** :monkey_face:\n${commandBoarder2}\n`);
+		await message.channel.send(commandsTwo);
 
 	},
 

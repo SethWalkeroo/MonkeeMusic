@@ -1,3 +1,49 @@
 {
-	
+  "A": [
+    {
+      "query": "attack on titan",
+      "title": "Attack on Titan: The Most Powerful Titans Ranked",
+      "url": "https://www.youtube.com/watch?v=h6Jt_kU8BsU",
+      "duration": "609"
+    }
+  ],
+  "B": [
+    {
+      "query": "back in black",
+      "title": "AC/DC - Back In Black (Official Video)",
+      "url": "https://www.youtube.com/watch?v=pAgnJDJN4VA",
+      "duration": "254"
+    },
+    {
+      "query": "blood moon rising",
+      "title": "Creedence Clearwater Revival: Bad Moon Rising",
+      "url": "https://www.youtube.com/watch?v=5BmEGm-mraE",
+      "duration": "142"
+    }
+  ],
+  "L": [
+    {
+      "query": "lofi hip hop beats to relax to",
+      "title": "lofi hip hop radio - beats to relax/study to",
+      "url": "https://www.youtube.com/watch?v=5qap5aO4i9A",
+      "duration": "0",
+      "isLivestream": true
+    }
+  ],
+  "T": [
+    {
+      "query": "the campfire song song",
+      "title": "SpongeBob Iconic Moment: Campfire Song Song !",
+      "url": "https://www.youtube.com/watch?v=MWTBxPudQig",
+      "duration": "72"
+    }
+  ],
+  "S": [
+    {
+      "query": "sins of the father",
+      "title": "[Quest Guide] Sins of the father",
+      "url": "https://www.youtube.com/watch?v=cn_anr_Hc4Q",
+      "duration": "3523"
+    }
+  ]
 }

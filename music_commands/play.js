@@ -3,6 +3,7 @@ const ytsr = require('ytsr');
 const stringSimilarity = require('string-similarity');
 const fs = require('fs');
 const chalk = require('chalk');
+const { MessageAttachment } = require('discord.js');
 const cacheLocation = '../MonkeeMusic/music_data/query_cache.json'
 const queueLimit = 250;
 
@@ -27,16 +28,16 @@ module.exports = {
 
 
 			if (!voiceChannel) {
-				return message.channel.send('You need to be in a voice channel to play music!');
+				return await message.channel.send('You need to be in a voice channel to play music!');
 			}
 			
 			const permissions = voiceChannel.permissionsFor(message.client.user);
 			if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
-				return message.channel.send('I need the permissions to join and speak in your voice channel!');
+				return await message.channel.send('I need the permissions to join and speak in your voice channel!');
 			}
 
 			if (!args[1]) {
-				return message.channel.send('Please enter an argument for the play command!');
+				return await message.channel.send('Please enter an argument for the play command!');
 			}
 
 			// check for the playlist command
@@ -65,7 +66,7 @@ module.exports = {
 			await this.checkQueue(message, args, config, song, voiceChannel, queue, queueLimit, serverQueue, playlistSongs);
 		} catch (error) {
 			console.log(error);
-			message.channel.send(error.message);
+			await message.channel.send(error.message);
 		}
 	},
 
@@ -91,7 +92,12 @@ module.exports = {
 
 		await dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
 		if (!serverQueue.loop) {
-			await serverQueue.textChannel.send(`:monkey_face: :musical_note: Start playing: **${song.title}**`);
+			if (!message.client.config.silent) {
+				await message.channel.send(`:monkey_face: :musical_note:  Start playing: **${song.title}**`);
+			} else {
+				message.react('▶️');
+				message.react('🎵');
+			}
 		}
 	},
 
@@ -132,7 +138,7 @@ module.exports = {
 								
 								const results = await ytsr(currentQuery, {limit: 1, pages: 1});
 								if (!results.items.length) {
-									return message.channel.send('Sorry, I could not find a result matching that query! :worried:');
+									return await message.channel.send('Sorry, I could not find a result matching that query! :worried:');
 								}
 								videoId = results.items[0].id;
 								let itemsIndex = 1;
@@ -202,20 +208,32 @@ QUERY: ${chalk.cyan(`${currentQuery}`)}
 			} catch (err) {
 				console.log(err);
 				queue.delete(message.guild.id);
-				return message.channel.send(err);
+				return await message.channel.send(err);
 			}
 		} else {
 			if (!serverQueue.songs[0]) {
 				serverQueue.songs.push(song);
 				this.play(message, serverQueue.songs[0]);
 			} else if (serverQueue.songs.length >= queueLimit) {
-				return message.channel.send(`You have reached the maximum number of songs to have in queue (**${queueLimit}**) :worried:`);
+				return await message.channel.send(`You have reached the maximum number of songs to have in queue (**${queueLimit}**) :worried:`);
 			} else if (!playlistSongs.length) {
 				serverQueue.songs.push(song);
-				return message.channel.send(`**${song.title}** has been added to the queue! :monkey_face: :thumbup:`);
+				if (!message.client.config.silent) {
+					return await message.channel.send(`**${song.title}** has been added to the queue! :monkey_face: :thumbup:`);
+				} else {
+					message.react('➕');
+					return await message.react('🎵');
+				}
+
 			} else {
 				serverQueue.songs = serverQueue.songs.concat(playlistSongs);
-				return message.channel.send(`The **${args[2]}** playlist has been added to the queue! :monkey_face: :thumbup:`);
+				if (!message.client.config.silent) {
+					return await message.channel.send(`The **${args[2]}** playlist has been added to the queue! :monkey_face: :thumbup:`);
+				} else {
+					message.react('➕');
+					return await message.react('🎵');
+				}
+
 			}
 
 		}
