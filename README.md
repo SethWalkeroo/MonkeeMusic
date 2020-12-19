@@ -22,6 +22,7 @@
 | loop | \[loop [number of loops (infinite if not specified)] | loop the song that is currently playing. |
 | move | \[move [current position] [desired position] | move a song to a different position in the queue. |
 | pause | \[pause | pause the song that is currently playing. |
+| ping | \[ping | test your latency to the bot. |
 | playing | \[playing | display the song that is currently playing. |
 | play | \[play [link or query (song name)] | play a specified song in the bot. |
 | playtop | \[playtop [link or query (song name)] | add a song to the upcoming position in the queue. |
