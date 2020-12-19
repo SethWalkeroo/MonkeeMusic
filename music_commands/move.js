@@ -7,13 +7,16 @@ module.exports = {
 	async execute(message, args) {
 		const serverQueue = message.client.queue.get(message.guild.id);
 		if (!message.member.voice.channel) return await message.channel.send('You have to be in a voice channel to move a song.');
-		if (!serverQueue) return await message.channel.send('There are no songs playing in the queue!');
+        if (!serverQueue) return await message.channel.send('There are no songs playing in the queue!');
+        if (!serverQueue.songs.length) return await message.channel.send('There are no songs in the queue!');
 		if (args.length < 2) return await message.channel.send('Please specify the current queue position and the desired queue position to move to!');
 
         const firstPosition = parseInt(args[0]) - 1;
         const desiredPosition = parseInt(args[1] - 1);
-        this.validNumber(firstPosition, serverQueue);
-        this.validNumber(desiredPosition, serverQueue);
+
+        if (!this.validNumber(firstPosition, serverQueue || this.validNumber(desiredPosition, serverQueue))) {
+            return message.channel.send('Invalid move positions for the current song queue!');
+        }
         
         let cleanedSongs = [];
         let songToMove = serverQueue.songs[firstPosition];
@@ -25,13 +28,20 @@ module.exports = {
             }
         }
         serverQueue.songs = cleanedSongs;
-        return await message.channel.send(`Song at position **${firstPosition}** has been moved  to position **${desiredPosition}**`);
+        if (!message.client.config.silent) {
+            await message.channel.send(`Song at position **${firstPosition + 1}** has been moved  to position **${desiredPosition + 1}**`);
+        } else {
+            await message.react('👍');
+        }
+
     },
-    async validNumber(number, serverQueue) {
+    validNumber(number, serverQueue) {
         if (isNaN(number)) {
-			return await message.channel.send('That doesn\'t seem to be a valid number.');
+			return false;
 		} else if (number < 0 || number > serverQueue.songs.length) {
-			return await message.channel.send(`Please enter a value that is in range of the current queue size (${serverQueue.songs.length}).`);
-		}
+			return false;
+		} else {
+            return true;
+        }
     }
 };

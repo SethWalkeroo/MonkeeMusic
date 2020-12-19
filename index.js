@@ -27,7 +27,8 @@ const commandsWithArgs = [
 	'duration',
 	'skipto',
 	'move',
-	'prefix'
+	'prefix',
+	'remove'
 ];
 
 client.once('ready', async () => {
