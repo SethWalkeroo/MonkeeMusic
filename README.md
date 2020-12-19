@@ -21,11 +21,12 @@
 | duration | \[duration, #duratin queue, #duration [playlist name] | displays either the duration of the song playing, the current queue, or a specified playlist. |
 | loop | \[loop [number of loops (infinite if not specified)] | loop the song that is currently playing. |
 | move | \[move [current position] [desired position] | move a song to a different position in the queue. |
+| pause | \[pause | pause the song that is currently playing. |
 | playing | \[playing | display the song that is currently playing. |
 | play | \[play [link or query (song name)] | play a specified song in the bot. |
 | playtop | \[playtop [link or query (song name)] | add a song to the upcoming position in the queue. |
 | play (playlists) | \[play [playlist] [playlist name] | play one of the custom playlists through the bot. |
-| pause | \[pause | pause the song that is currently playing. |
+| prefix | \[prefix [desired prefix] | change the command prefix for the bot. |
 | removedupes | \[removedupes | remove all duplicate songs from the queue. |
 | resume | \[resume | resume the song that is currently playing. |
 | queue | \[queue | view all of the songs in the current queue. |
