@@ -6,7 +6,7 @@
 <h1 align="center">MonkeeMusic</h1>
 <h3 align="center">Command Prefix: [</h3>
 <p align="center">An open source, feature rich, and monkey themed Discord music bot!</p>
-<p align="center">Invite him to your server today: https://discord.com/api/oauth2/authorize?client_id=786887384620859392&permissions=8&scope=bot </p>
+<p align="center">To invite him to your server today:<a href="https://discord.com/api/oauth2/authorize?client_id=786887384620859392&permissions=8&scope=bot"> CLICK HERE!</a> </p>
 <br>
 <br>
 
