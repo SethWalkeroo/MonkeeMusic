@@ -18,5 +18,4 @@ module.exports = {
 
 		await message.channel.send(helpEmbed);
 	},
-
 };

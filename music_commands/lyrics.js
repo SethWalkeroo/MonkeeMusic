@@ -1,5 +1,6 @@
 const getLyrics = require("@allvaa/get-lyrics");
 const Discord = require('discord.js');
+const chalk = require('chalk');
 
 module.exports = {
 	name: 'lyrics',
@@ -13,8 +14,8 @@ module.exports = {
         const backupEmbed = new Discord.MessageEmbed().setColor('#FF0000');
         const query = args.slice(0, args.length).join([' ']);
         const lyrics = await getLyrics(query);
-        let songLyrics = lyrics.lyrics;
         try {
+            let songLyrics = lyrics.lyrics;
             if (songLyrics.length > 2048) {
                 const middle = Math.floor(songLyrics.length / 2);
                 let songLyrics1 = songLyrics.substring(0, middle);
@@ -32,8 +33,8 @@ module.exports = {
                 await message.channel.send(lyricsEmbed);
             }
         } catch (error) {
-            await message.channel.send('There was an error fetching the lyrics for that song! :worried:');
-            console.log(error);
+            await message.channel.send('There was an error fetching the lyrics for that song! :worried:\nTry searching something else.');
+            console.log(chalk.red(`Failed getting lyrics for ${chalk.yellow(query)}`));
         }
 	},
 };
