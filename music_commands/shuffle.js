@@ -14,7 +14,7 @@ module.exports = {
 		if (!message.client.config.silent) {
 			await message.channel.send('The current queue has been shuffled! :monkey_face: :thumbup:');
 		} else {
-			await message.react('🤢');
+			await message.react('🔀');
 		}
 	},
 };
