@@ -155,13 +155,17 @@ async function playlists_show(message, playlists, args) {
 	if (!songs) {
 		return await message.channel.send('That playlist does not exist.');
 	}
-	let results = '';
+	let result = '';
 	let count = 1;
+	if (!songs.length) {
+		return await message.channel.send('```This playlist is empty 😟```');
+	}
 	for (song of songs) {
-		results += `**${count}:**  ${song.title}\n`;
+		result += `${count}:  ${song.title}\n`;
 		count++;
 	}
-	await message.channel.send(results);
+	const backticks = '```';
+	await message.channel.send(`${backticks}${result}${backticks}`);
 }
 
 async function playlists_remove(message, playlists, playlistsLocation, args) {
@@ -195,15 +199,16 @@ async function playlists_remove(message, playlists, playlistsLocation, args) {
 
 async function playlists_all(message, playlists) {
 	if (JSON.stringify(playlists) === '{}') {
-		return await message.channel.send('There are currently no playlists created for this server.');
+		return await message.channel.send('```This server has no playlists 😟```');
 	}
 	let count = 1;
 	let result = '';
 	for (playlist in playlists) {
-		result += `**${count}:** ${playlist}\n`;
+		result += `${count}: ${playlist}\n`;
 		count++;
 	}
-	await message.channel.send(result);
+	const backticks = '```';
+	await message.channel.send(`${backticks}${result}${backticks}`);
 }
 
 async function playlists_delete(message, playlists, playlistsLocation, args) {

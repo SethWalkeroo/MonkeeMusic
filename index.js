@@ -28,7 +28,8 @@ const commandsWithArgs = [
 	'skipto',
 	'move',
 	'prefix',
-	'remove'
+	'remove',
+	'lyrics'
 ];
 
 client.once('ready', async () => {

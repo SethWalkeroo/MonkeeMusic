@@ -79,7 +79,7 @@ module.exports = {
 		const queueBitrate = serverQueue.bitrate;
 		let ID = ytdl.getVideoID(song.url);
 	
-		const dispatcher = await serverQueue.connection
+		const dispatcher = serverQueue.connection
 			.play(ytdl(ID, {quality: 'highestaudio', highWaterMark: 1<<25}), {bitrate: queueBitrate, highWaterMark: 1})
 			.on('finish', () => {
 				if (!serverQueue.loop && serverQueue.numberOfLoops <= 0) {
