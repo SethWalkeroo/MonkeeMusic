@@ -20,6 +20,7 @@
 | clear | \[clear | clear all songs from the current queue. |
 | duration | \[duration, #duration queue, #duration [playlist name] | displays either the duration of the song playing, the current queue, or a specified playlist. |
 | loop | \[loop [number of loops (infinite if not specified)] | loop the song that is currently playing. |
+| lyrics | \[lyrics [name of song] | get the lyrics of a specified song. |
 | move | \[move [current position] [desired position] | move a song to a different position in the queue. |
 | pause | \[pause | pause the song that is currently playing. |
 | ping | \[ping | test your latency to the bot. |
@@ -28,6 +29,7 @@
 | playtop | \[playtop [link or query (song name)] | add a song to the upcoming position in the queue. |
 | play (playlists) | \[play [playlist] [playlist name] | play one of the custom playlists through the bot. |
 | prefix | \[prefix [desired prefix] | change the command prefix for the bot. |
+| remove | \[remove [song position] | remove a song from a specified position in the queue. |
 | removedupes | \[removedupes | remove all duplicate songs from the queue. |
 | resume | \[resume | resume the song that is currently playing. |
 | queue | \[queue | view all of the songs in the current queue. |
