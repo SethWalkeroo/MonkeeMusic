@@ -22,10 +22,9 @@ module.exports = {
 			const queryData = fs.readFileSync(cacheLocation);
 			const playlistCache = await JSON.parse(queryData);
 
-
-			if (!voiceChannel) {
-				return message.channel.send('You need to be in a voice channel to play music!');
-			}
+			if (!serverQueue) return message.channel.send('You can only playtop when there are already songs in the queue! Use the normal play command instead.');
+			if (!serverQueue.songs.length) return message.channel.send('You can only playtop when there are already songs in the queue! Use the normal play command instead.');
+			if (!voiceChannel) return message.channel.send('You need to be in a voice channel to play music!');
 			
 			const permissions = voiceChannel.permissionsFor(message.client.user);
 			if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
@@ -99,77 +98,83 @@ module.exports = {
 
 	async getSong(message, args, playlistSongs, playlistCache) {
 		let song = 0;
-			if (!playlistSongs.length) {
-				let firstLetter = null;
-				let currentQuery = args.slice(1, args.length + 1).join([' ']); 
-				if (currentQuery.length) {
-					firstLetter = currentQuery[0].toUpperCase();
-					if (playlistCache[`${firstLetter}`]) {
-						for (previousQuery of playlistCache[`${firstLetter}`]) {
-							if (stringSimilarity.compareTwoStrings(previousQuery.query, currentQuery) >= 0.70) {
-								console.log(chalk.green(`MATCHING QUERY FOUND! for ${chalk.yellow(currentQuery)}`));
-								song = {
-									title: previousQuery.title,
-									url: previousQuery.url,
-									duration: previousQuery.duration
-								};
-								playlistCache[`${firstLetter}`].push(song);
-								break;
-							}
+		if (!playlistSongs.length) {
+			let firstLetter = null;
+			let currentQuery = args.slice(1, args.length + 1).join([' ']); 
+			if (currentQuery.length) {
+				firstLetter = currentQuery[0].toUpperCase();
+				if (playlistCache[`${firstLetter}`]) {
+					for (previousQuery of playlistCache[`${firstLetter}`]) {
+						if (stringSimilarity.compareTwoStrings(previousQuery.query, currentQuery) >= 0.70) {
+							console.log(chalk.green(`MATCHING QUERY FOUND! for ${chalk.yellow(currentQuery)}`));
+							song = {
+								title: previousQuery.title,
+								channel: previousQuery.channel,
+								thumbnail: previousQuery.thumbnail,
+								url: previousQuery.url,
+								duration: previousQuery.duration
+							};
+							playlistCache[`${firstLetter}`].push(song);
+							break;
 						}
-					} else {
-						playlistCache[`${firstLetter}`] = [];
-					}
-					if (!song) {
-						let videoId = args[1];
-						if (!playlistSongs.length) {
-							if (!videoId.startsWith('https://')) {
-								if (args.length > 2) {
-									currentQuery = args.slice(1, args.length + 1).join([' ']); 
-								} else {
-									currentQuery = args[1];
-								}
-								console.log(`${chalk.yellow(`${message.author.username}`)} tried to query "${chalk.cyan(currentQuery)}"`);
-								
-								const results = await ytsr(currentQuery, {limit: 1, pages: 1});
-								if (!results.items.length) {
-									return await message.channel.send('Sorry, I could not find a result matching that query! :worried:');
-								}
-								videoId = results.items[0].id;
-								let itemsIndex = 1;
-								while (!videoId) {
-									videoId = results.items[itemsIndex].id;
-									itemsIndex++;
-								}
-							}
-						}
-						const songInfo = await ytdl.getInfo(videoId);
-						song = {
-							query: currentQuery,
-							title: songInfo.videoDetails.title,
-							url: songInfo.videoDetails.video_url,
-							duration: songInfo.videoDetails.lengthSeconds
-						};
-						playlistCache[`${firstLetter}`].push(song);
-						const data = JSON.stringify(playlistCache, null, 2);
-						fs.writeFile(cacheLocation, data, (err) => {
-						    if (err) throw err;
-						    console.log(`
-${chalk.magenta('NEW QUERY ADDED!')}
-QUERY: ${chalk.cyan(`${currentQuery}`)}
-						    `);
-						});
 					}
 				} else {
+					playlistCache[`${firstLetter}`] = [];
+				}
+				if (!song) {
+					let videoId = args[1];
+					if (!playlistSongs.length) {
+						if (!videoId.startsWith('https://')) {
+							if (args.length > 2) {
+								currentQuery = args.slice(1, args.length + 1).join([' ']); 
+							} else {
+								currentQuery = args[1];
+							}
+							console.log(`${chalk.yellow(`${message.author.username}`)} tried to query "${chalk.cyan(currentQuery)}"`);
+							
+							const results = await ytsr(currentQuery, {limit: 1, pages: 1});
+							if (!results.items.length) {
+								return await message.channel.send('Sorry, I could not find a result matching that query! :worried:');
+							}
+							videoId = results.items[0].id;
+							let itemsIndex = 1;
+							while (!videoId) {
+								videoId = results.items[itemsIndex].id;
+								itemsIndex++;
+							}
+						}
+					}
 					const songInfo = await ytdl.getInfo(videoId);
 					song = {
+						query: currentQuery,
 						title: songInfo.videoDetails.title,
+						channel: songInfo.videoDetails.author.name,
+						thumbnail: songInfo.videoDetails.thumbnails[0].url,
 						url: songInfo.videoDetails.video_url,
 						duration: songInfo.videoDetails.lengthSeconds
 					};
+					playlistCache[`${firstLetter}`].push(song);
+					const data = JSON.stringify(playlistCache, null, 2);
+					fs.writeFile(cacheLocation, data, (err) => {
+						if (err) throw err;
+						console.log(`
+${chalk.magenta('NEW QUERY ADDED!')}
+QUERY: ${chalk.cyan(`${currentQuery}`)}
+						`);
+					});
 				}
+			} else {
+				const songInfo = await ytdl.getInfo(videoId);
+				song = {
+					title: songInfo.videoDetails.title,
+					channel: songInfo.videoDetails.author.name,
+					thumbnail: songInfo.videoDetails.thumbnails[0].url,
+					url: songInfo.videoDetails.video_url,
+					duration: songInfo.videoDetails.lengthSeconds
+				};
 			}
-			return song;
+		}
+		return song;
 	},
 
 	async checkQueue(message, args, song, voiceChannel, queue, queueLimit, serverQueue, playlistSongs) {
