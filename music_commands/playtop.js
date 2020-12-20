@@ -3,7 +3,6 @@ const ytsr = require('ytsr');
 const stringSimilarity = require('string-similarity');
 const fs = require('fs');
 const chalk = require('chalk');
-const config = require('../config.json');
 const cacheLocation = '../MonkeeMusic/music_data/query_cache.json'
 const queueLimit = 250;
 
@@ -61,7 +60,7 @@ module.exports = {
 			this.checkQueue(message, args, song, voiceChannel, queue, queueLimit, serverQueue, playlistSongs);
 		} catch (error) {
 			console.log(error);
-			await message.channel.send(error.message);
+			return message.channel.send(error.message);
 		}
 	},
 
@@ -134,7 +133,7 @@ module.exports = {
 							
 							const results = await ytsr(currentQuery, {limit: 1, pages: 1});
 							if (!results.items.length) {
-								return await message.channel.send('Sorry, I could not find a result matching that query! :worried:');
+								return 0;
 							}
 							videoId = results.items[0].id;
 							let itemsIndex = 1;
@@ -178,6 +177,9 @@ QUERY: ${chalk.cyan(`${currentQuery}`)}
 	},
 
 	async checkQueue(message, args, song, voiceChannel, queue, queueLimit, serverQueue, playlistSongs) {
+		if (!song) {
+			return message.channel.send('Sorry, I could not find a result matching that query! :worried: Please try again.');
+		}
 		// Construct the serverQueue if it does not already exist. 
 		if (!serverQueue) {
 			const queueConstruct = {
@@ -194,10 +196,12 @@ QUERY: ${chalk.cyan(`${currentQuery}`)}
 
 			await queue.set(message.guild.id, queueConstruct);
 			if (!playlistSongs.length) {
-				const currentSong = queueConstruct.songs[0];
-				delete queueConstruct.songs[0];
-				serverQueue.songs.shift();
-				queueConstruct.songs.unshift(currentSong, song);
+				if (song) {
+					const currentSong = queueConstruct.songs[0];
+					delete queueConstruct.songs[0];
+					serverQueue.songs.shift();
+					queueConstruct.songs.unshift(currentSong, song);
+				}
 			} else {
 				queueConstruct.songs = queueConstruct.songs.concat(playlistSongs);
 			}
@@ -213,14 +217,16 @@ QUERY: ${chalk.cyan(`${currentQuery}`)}
 			}
 		} else {
 			if (serverQueue.songs.length >= queueLimit) {
-				return await message.channel.send(`You have reached the maximum number of songs to have in queue (**${queueLimit}**) :worried:`);
+				return message.channel.send(`You have reached the maximum number of songs to have in queue (**${queueLimit}**) :worried:`);
 			}
 			if (!playlistSongs.length) {
-				const currentSong = serverQueue.songs[0];
-				delete serverQueue.songs[0];
-				serverQueue.songs.shift();
-				serverQueue.songs.unshift(currentSong, song);
-				return await message.channel.send(`**${song.title}** has been added to the queue! :monkey_face: :thumbup:`);
+				if (song) {
+					const currentSong = serverQueue.songs[0];
+					delete serverQueue.songs[0];
+					serverQueue.songs.shift();
+					serverQueue.songs.unshift(currentSong, song);
+					return await message.channel.send(`**${song.title}** has been added to the queue! :monkey_face: :thumbup:`);
+				}
 			} else {
 				serverQueue.songs = serverQueue.songs.concat(playlistSongs);
 				return await message.channel.send(`The **${args[2]}** playlist has been added to the queue! :monkey_face: :thumbup:`);

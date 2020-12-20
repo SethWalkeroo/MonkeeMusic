@@ -98,6 +98,8 @@ async function playlists_add(message, playlists, playlistsLocation, args) {
 		const song = {
 			title: songInfo.videoDetails.title,
 			url: songInfo.videoDetails.video_url,
+			channel: songInfo.videoDetails.author.name,
+			thumbnail: songInfo.videoDetails.thumbnails[0].url,
 			duration: songInfo.videoDetails.lengthSeconds,
 			position: songPosition
 		};

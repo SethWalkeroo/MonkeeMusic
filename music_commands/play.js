@@ -29,16 +29,16 @@ module.exports = {
 
 
 			if (!voiceChannel) {
-				return await message.channel.send('You need to be in a voice channel to play music!');
+				return message.channel.send('You need to be in a voice channel to play music!');
 			}
 			
 			const permissions = voiceChannel.permissionsFor(message.client.user);
 			if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
-				return await message.channel.send('I need the permissions to join and speak in your voice channel!');
+				return message.channel.send('I need the permissions to join and speak in your voice channel!');
 			}
 
 			if (!args[1]) {
-				return await message.channel.send('Please enter an argument for the play command!');
+				return message.channel.send('Please enter an argument for the play command!');
 			}
 
 			// check for the playlist command
@@ -67,7 +67,7 @@ module.exports = {
 			await this.checkQueue(message, args, config, song, voiceChannel, queue, queueLimit, serverQueue, playlistSongs);
 		} catch (error) {
 			console.log(error);
-			await message.channel.send(error.message);
+			return message.channel.send(error.message);
 		}
 	},
 
@@ -77,7 +77,14 @@ module.exports = {
 
 		if (!song) return;
 		const queueBitrate = serverQueue.bitrate;
-		let ID = ytdl.getVideoID(song.url);
+		let ID = null;
+		try {
+			ID = ytdl.getVideoID(song.url);
+		} catch (error) {
+			console.log(error)
+			return message.channel.send('Sorry, something went wrong! :worried: Please try again.')
+		}
+
 	
 		const dispatcher = serverQueue.connection
 			.play(ytdl(ID, {quality: 'highestaudio', highWaterMark: 1<<25}), {bitrate: queueBitrate, highWaterMark: 1})
@@ -118,7 +125,7 @@ module.exports = {
 						{ name: 'Song Duration', value: `${songDuration.hours}:${songDuration.minutes}:${songDuration.seconds}`, inline: true},
 					);
 				}
-				await message.channel.send(songEmbed);
+				message.channel.send(songEmbed);
 			} else {
 				message.react('🎵');
 			}
@@ -164,7 +171,7 @@ module.exports = {
 							
 							const results = await ytsr(currentQuery, {limit: 1, pages: 1});
 							if (!results.items.length) {
-								return message.channel.send('Sorry, I could not find a result matching that query! :worried:');
+								return 0;
 							}
 							videoId = results.items[0].id;
 							let itemsIndex = 1;
@@ -174,8 +181,14 @@ module.exports = {
 							}
 						}
 					}
+					let songInfo = null;
+					try {
+						songInfo = await ytdl.getInfo(videoId);
+					} catch (error) {
+						console.log(error);
+						return message.channel.send('Something went wrong! :worried: Please try again.');
+					}
 
-					const songInfo = await ytdl.getInfo(videoId);
 					song = {
 						query: currentQuery,
 						title: songInfo.videoDetails.title,
@@ -211,6 +224,9 @@ QUERY: ${chalk.cyan(`${currentQuery}`)}
 	},
 
 	async checkQueue(message, args, config, song, voiceChannel, queue, queueLimit, serverQueue, playlistSongs) {
+		if (!song) {
+			return message.channel.send('Sorry, I could not find a result matching that query! :worried: Please try again.');
+		}
 		// Construct the serverQueue if it does not already exist. 
 		if (!serverQueue) {
 			const queueConstruct = {
@@ -227,7 +243,9 @@ QUERY: ${chalk.cyan(`${currentQuery}`)}
 
 			await queue.set(message.guild.id, queueConstruct);
 			if (!playlistSongs.length) {
-				queueConstruct.songs.push(song);
+				if (song) {
+					queueConstruct.songs.push(song);
+				}
 			} else {
 				queueConstruct.songs = queueConstruct.songs.concat(playlistSongs);
 			}
@@ -243,12 +261,16 @@ QUERY: ${chalk.cyan(`${currentQuery}`)}
 			}
 		} else {
 			if (!serverQueue.songs[0]) {
-				serverQueue.songs.push(song);
-				this.play(message, serverQueue.songs[0]);
+				if (song) {
+					serverQueue.songs.push(song);
+					this.play(message, serverQueue.songs[0]);
+				}
 			} else if (serverQueue.songs.length >= queueLimit) {
 				await message.channel.send(`You have reached the maximum number of songs to have in queue (**${queueLimit}**) :worried:`);
 			} else if (!playlistSongs.length) {
-				serverQueue.songs.push(song);
+				if (song) {
+					serverQueue.songs.push(song);
+				}
 				if (!message.client.config.silent) {
 					await message.channel.send(`**${song.title}** has been added to the queue! :monkey_face: :thumbup:`);
 				} else {
