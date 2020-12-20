@@ -38,7 +38,6 @@
 | settings | \[settings | show the server specific config of the bot. |
 | silence | \[silence | Toggle the bot to only use reactions for certain commands. Error messages and certain messages will still send. |
 | skip | \[skip | skip the song that is currently playing in the queue. |
-| stop | \[stop | stop the audio stream and clear the queue. |
 | reverse | \[reverse | reverses the order of the current song queue. |
 | volume | \[volume [value between 0 and 10] | adjust the channel wide volume of the bot. |
 
