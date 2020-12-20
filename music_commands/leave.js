@@ -9,11 +9,11 @@ module.exports = {
 		if (!message.member.voice.channel) return message.channel.send('You have to be in a voice channel to stop the music.');
 		if (!serverQueue || !serverQueue.connection.dispatcher) {
 			try {
-				await message.member.voice.channel.leave();
+				message.member.voice.channel.leave();
 				if (!message.client.config.silent) {
-					return message.channel.send('The bot has left the voice channel! :monkey_face: :thumbup:');
+					return await message.channel.send('The bot has left the voice channel! :monkey_face: :thumbup:');
 				} else {
-					return message.react('🍃');
+					return await message.react('🍃');
 				}
 			}
 			catch (error) {
@@ -22,17 +22,17 @@ module.exports = {
 		}
 		try {
 			serverQueue.songs = [];
-			await serverQueue.connection.dispatcher.end();
+			serverQueue.connection.dispatcher.end();
 		} catch (error) {
 			console.log(error);
-			await message.member.voice.channel.leave();
+			message.member.voice.channel.leave();
 		}
 		message.client.queue.delete(message.guild.id);
 		await message.member.voice.channel.leave();
 		if (!message.client.config.silent) {
-			message.channel.send('The bot has left the voice channel! :monkey_face: :thumbup:');
+			await message.channel.send('The bot has left the voice channel! :monkey_face: :thumbup:');
 		} else {
-			message.react('🍃');
+			await message.react('🍃');
 		}
 
 	},
