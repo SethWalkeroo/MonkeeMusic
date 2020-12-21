@@ -32,7 +32,7 @@ module.exports = {
 		} else {
 			beginningOfQueue = Math.floor(result.length / 3)
 			firstHalf = result.slice(0, beginningOfQueue);
-			firstHalf.push(`And about ${results.length - beginningOfQueue} more songs in queue...`);
+			firstHalf.push(`And about ${result.length - beginningOfQueue} more songs in queue...`);
 			message.channel.send(`${backticks}${firstHalf.join('\r\n')}${backticks}`);
 		}
 	},
