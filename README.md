@@ -32,6 +32,7 @@
 | remove | \[remove [song position] | remove a song from a specified position in the queue. |
 | removedupes | \[removedupes | remove all duplicate songs from the queue. |
 | resume | \[resume | resume the song that is currently playing. |
+| restart | \[restart | restart the song that is currently playing |
 | queue | \[queue | view all of the songs in the current queue. |
 | shuffle | \[shuffle | shuffles all of the songs in the current queue. |
 | save | \[save [name for playlist] | save the current queue as a playlist. |
