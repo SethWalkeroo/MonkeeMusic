@@ -9,7 +9,6 @@ const client = new Client();
 client.commands = new Discord.Collection();
 client.config = config;
 const cooldowns = new Discord.Collection();
-
 const musicCommandFiles = fs.readdirSync('./music_commands').filter(file => file.endsWith('.js'));
 
 for (const file of musicCommandFiles) {
@@ -36,13 +35,11 @@ client.once('ready', async () => {
 	const prefix = config.prefix;
 	client.user.setActivity(`prefix: ${prefix} | ${prefix}help`, { type: 'WATCHING' });
 	console.log(chalk.green('Connected to Discord!'));
+	let serverCount = 0;
 	client.guilds.cache.forEach(guild => {
-		console.log(`
-${chalk.cyan('JOINED SERVER!')}
-GUILD-NAME: ${chalk.yellow(`${guild.name}`)}
-GUILD-ID: ${chalk.green(`${guild.id}`)}
-		`);
+		serverCount++;
 	});
+	console.log(chalk.green(`Connected to ${chalk.cyan(serverCount)} different servers!`));
 });
 
 client.on("guildCreate", (guild) => {
