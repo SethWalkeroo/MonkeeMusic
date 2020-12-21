@@ -26,6 +26,8 @@
 | ping | \[ping | test your latency to the bot. |
 | playing | \[playing | display the song that is currently playing. |
 | play | \[play [link or query (song name)] | play a specified song in the bot. |
+| play youtube playlist | \[play ytplaylist [url or id of youtube playlist] | play a youtube playlist using the playlist url or id. |
+| play playlist | \[play playlist [name of server playlist] | play one of your custom playlists made on your server. |
 | playtop | \[playtop [link or query (song name)] | add a song to the upcoming position in the queue. |
 | play (playlists) | \[play [playlist] [playlist name] | play one of the custom playlists through the bot. |
 | prefix | \[prefix [desired prefix] | change the command prefix for the bot. |
