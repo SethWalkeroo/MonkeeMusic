@@ -1,5 +1,6 @@
 const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
+const ytpl = require('ytpl');
 const stringSimilarity = require('string-similarity');
 const fs = require('fs');
 const chalk = require('chalk');
@@ -27,7 +28,6 @@ module.exports = {
 			const rawData = fs.readFileSync(configLocation);
 			let config = JSON.parse(rawData);
 
-
 			if (!voiceChannel) {
 				return message.channel.send('You need to be in a voice channel to play music!');
 			}
@@ -48,9 +48,9 @@ module.exports = {
 				const playlistsLocation = `../MonkeeMusic/music_data/${message.guild.id}.json`;
 				const data = fs.readFileSync(playlistsLocation);
 				const playlists = await JSON.parse(data);
-				if (!args[2]) {
-					return message.channel.send('Please specify which playlist you would like to add!');
-				}
+
+				if (!args[2]) return message.channel.send('Please specify which playlist you would like to add!');
+
 				for (playlist in playlists) {
 					if (args[2] === playlist) {
 						chosenPlaylist = playlists[`${playlist}`];
@@ -61,8 +61,26 @@ module.exports = {
 					playlistSongs.push(playlistSong);
 				}
 				console.log(`${message.author.username} tried to get a playlsit.`);
+			} else if (args[1] === 'ytplaylist') {
+				if (!args[2]) return message.channel.send('Please enter the youtube playlist url or id!');
+					const url = args[2];
+					if (ytpl.validateID(url)) {
+						const playlistInfo = await ytpl(url);
+						for (playlistSong of playlistInfo.items) {
+							constructPlaylistSong = {
+								title: playlistSong.title,
+								channel: playlistSong.author.name,
+								thumbnail: playlistSong.thumbnails[0].url,
+								url: playlistSong.url,
+								duration: playlistSong.durationSec,
+								isLivestream: playlistSong.isLive
+							}
+							playlistSongs.push(constructPlaylistSong);
+						}
+					} else {
+						message.channel.send('Sorry, it seems like you entered an invalid playlist url!')
+					}
 			}
-			
 			const song = await this.getSong(message, args, playlistSongs, playlistCache);
 			await this.checkQueue(message, args, config, song, voiceChannel, queue, queueLimit, serverQueue, playlistSongs);
 		} catch (error) {
@@ -224,8 +242,8 @@ QUERY: ${chalk.cyan(`${currentQuery}`)}
 	},
 
 	async checkQueue(message, args, config, song, voiceChannel, queue, queueLimit, serverQueue, playlistSongs) {
-		if (!song) {
-			return message.channel.send('Sorry, I could not find a result matching that query! :worried: Please try again.');
+		if (!song && !playlistSongs.length) {
+			return message.channel.send('An invalid song or playlist was entered! Please try again.');
 		}
 		// Construct the serverQueue if it does not already exist. 
 		if (!serverQueue) {

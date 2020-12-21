@@ -11,17 +11,29 @@ module.exports = {
 		} else if (!serverQueue.songs.length) {
 			return await message.channel.send('```The queue is empty 😟```');
 		}
-		let result = ''
+		let result = []
 		let count = 1
+		totalLength = 0;
 		for (song of serverQueue.songs) {
 			if (count === 1) {
-				result += `1: ${song.title} (currently playing)\n`;
+				const queueInfo = `1: ${song.title} (currently playing)\n`
+				totalLength += queueInfo.length;
+				result.push(`1: ${song.title} (currently playing)`);
 			} else {
-				result += `${count}: ${song.title}\n`;
+				const queueInfo = `${count}: ${song.title}`;
+				totalLength += queueInfo.length;
+				result.push(queueInfo);
 			}
 			count += 1;
 		}
 		let backticks = '```';
-		await message.channel.send(`${backticks}${result}${backticks}`);
+		if (totalLength < 2000) {
+			message.channel.send(`${backticks}${result.join('\r\n')}${backticks}`);
+		} else {
+			beginningOfQueue = Math.floor(result.length / 3)
+			firstHalf = result.slice(0, beginningOfQueue);
+			firstHalf.push('And an awful lot more...');
+			message.channel.send(`${backticks}${firstHalf.join('\r\n')}${backticks}`);
+		}
 	},
 };

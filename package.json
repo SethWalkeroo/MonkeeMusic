@@ -22,6 +22,7 @@
     "string-similarity": "^4.0.3",
     "ytdl-core": "^4.2.1",
     "ytdl-core-discord": "^1.2.4",
+    "ytpl": "^2.0.3",
     "ytsr": "^2.0.1"
   }
 }

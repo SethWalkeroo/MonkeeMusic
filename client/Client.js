@@ -6,11 +6,8 @@ module.exports = class extends Client {
 			disableEveryone: true,
 			disabledEvents: ['TYPING_START'],
 		});
-
 		this.commands = new Collection();
-
 		this.queue = new Map();
-
 		this.config = config;
 	}
 };
