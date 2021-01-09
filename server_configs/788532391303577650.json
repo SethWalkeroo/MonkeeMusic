@@ -1,6 +1,6 @@
 {
-  "prefix": "[",
+  "prefix": "!",
   "bitrate": 384,
-  "volume": 1,
+  "volume": 5,
   "silent": false
 }
