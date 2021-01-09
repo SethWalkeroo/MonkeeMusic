@@ -18,6 +18,7 @@
 | clean | \[clean [number of messages] | clear messages from the text channel. |
 | clear | \[clear | clear all songs from the current queue. |
 | clear | \[clear | clear all songs from the current queue. |
+| definition | \[def (word) | Find the definition of a particular word. |
 | duration | \[duration, #duration queue, #duration [playlist name] | displays either the duration of the song playing, the current queue, or a specified playlist. |
 | loop | \[loop [number of loops (infinite if not specified)] | loop the song that is currently playing. |
 | lyrics | \[lyrics [name of song] | get the lyrics of a specified song. |

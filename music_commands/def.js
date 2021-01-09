@@ -1,4 +1,4 @@
-const wd = require('word-definition')
+const wd = require('word-definition');
 const Discord = require('discord.js');
 
 module.exports = {
@@ -8,17 +8,14 @@ module.exports = {
 	guildOnly: true,
 	cooldown: 3,
 	async execute(message, args) {
-		if (!args.length) {
-			return message.channel.send('Please specify the word you want a definition for!');
-		}
-		let language = 'en'
-		if (args[1]) {
-			language = args[1] 
-		}
+		if (!args.length) {return message.channel.send('Please specify the word you want a definition for!');}
+		if (args.length > 1) {return message.channel.send('Please only specify one word!');}
 		const word = args[0]
-		wd.getDef(word, language, null, function(definition) {
+		const image = 'https://www.collinsdictionary.com/images/full/dictionary_168552845.jpg'
+		wd.getDef(word, 'en', null, function(definition) {
 			const defEmbed = new Discord.MessageEmbed()
-			.setColor('#FF0000')
+			.setColor('#03cffc')
+			.setThumbnail(image)
 			.setTitle(definition.word.toUpperCase())
 			defEmbed.addFields(
 				{ name: 'category', value: definition.category},
@@ -26,6 +23,5 @@ module.exports = {
 			);
 			return message.channel.send(defEmbed);
 		});
-	return message.channel.send('Something went wrong LMAO!');
 	},
 };
