@@ -92,12 +92,17 @@ module.exports = {
 	},
 
 	async getSong(message, args, playlistSongs) {
-		let videoId = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstleyVEVO&ab'
+		let videoId = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstleyVEVO&ab';
+		let song = 0;
 		if (!playlistSongs.length) {
 			currentQuery = args.slice(1, args.length + 1).join([' ']);
 			if (!currentQuery.startsWith('http')) {
 				console.log(`${chalk.yellow(`${message.author.username}`)} tried to query "${chalk.cyan(currentQuery)}"`);
-				const results = await ytsr(currentQuery, {limit: 1, pages: 1});
+				try {
+					const results = await ytsr(currentQuery, {limit: 1, pages: 1});
+				} catch {
+					console.log('Simple text undefined stuff.')
+				}
 				try {	
 					videoId = results.items[0].id;
 				} catch {
@@ -106,17 +111,17 @@ module.exports = {
 			} else {
 				videoId = args[1]
 			}
+			songInfo = await ytdl.getInfo(videoId);
+			song = {
+				title: songInfo.videoDetails.title,
+				channel: songInfo.videoDetails.author.name,
+				thumbnail: songInfo.videoDetails.thumbnails[0].url,
+				url: songInfo.videoDetails.video_url,
+				duration: songInfo.videoDetails.lengthSeconds,
+				isLivestream: songInfo.videoDetails.isLive
+			};
+		return song;
 		}
-		songInfo = await ytdl.getInfo(videoId);
-		song = {
-			title: songInfo.videoDetails.title,
-			channel: songInfo.videoDetails.author.name,
-			thumbnail: songInfo.videoDetails.thumbnails[0].url,
-			url: songInfo.videoDetails.video_url,
-			duration: songInfo.videoDetails.lengthSeconds,
-			isLivestream: songInfo.videoDetails.isLive
-		};
-		return song
 	},
 
 	async checkQueue(message, args, song, voiceChannel, queue, queueLimit, serverQueue, playlistSongs) {
