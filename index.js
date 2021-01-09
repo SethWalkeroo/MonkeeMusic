@@ -28,12 +28,15 @@ const commandsWithArgs = [
 	'move',
 	'prefix',
 	'remove',
-	'lyrics'
+	'lyrics',
+	'def',
+	'syn',
+	'ant'
 ];
 
 client.once('ready', async () => {
 	const prefix = config.prefix;
-	client.user.setActivity(`prefix: ${prefix} | ${prefix}help`, { type: 'WATCHING' });
+	client.user.setActivity(`${prefix}help for commands`, { type: 'WATCHING' });
 	console.log(chalk.green('Connected to Discord!'));
 	let serverCount = 0;
 	client.guilds.cache.forEach(guild => {
