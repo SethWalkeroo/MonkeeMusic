@@ -98,15 +98,12 @@ module.exports = {
 			currentQuery = args.slice(1, args.length + 1).join([' ']);
 			if (!currentQuery.startsWith('http')) {
 				console.log(`${chalk.yellow(`${message.author.username}`)} tried to query "${chalk.cyan(currentQuery)}"`);
-				try {
-					const results = await ytsr(currentQuery, {limit: 1, pages: 1});
-				} catch {
-					console.log('Simple text undefined stuff.')
-				}
+				const results = await ytsr(currentQuery, {limit: 1, pages: 1});
 				try {	
 					videoId = results.items[0].id;
 				} catch {
-					console.log('no results found for query.')
+					console.log('no results found for query.');
+					message.channel.send('There were no results found for that query! Try again!');
 				}
 			} else {
 				videoId = args[1]

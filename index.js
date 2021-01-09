@@ -30,8 +30,7 @@ const commandsWithArgs = [
 	'remove',
 	'lyrics',
 	'def',
-	'syn',
-	'ant'
+	'8ball'
 ];
 
 client.once('ready', async () => {
