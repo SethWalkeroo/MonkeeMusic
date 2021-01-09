@@ -19,7 +19,6 @@
     "ffmpeg-static": "^4.2.7",
     "prism-media": "^1.2.3",
     "shuffle-array": "^1.0.1",
-    "string-similarity": "^4.0.3",
     "ytdl-core": "^4.4.1",
     "ytdl-core-discord": "^1.2.4",
     "ytpl": "^2.0.3",

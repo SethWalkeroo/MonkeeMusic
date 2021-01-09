@@ -1,7 +1,6 @@
 const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
 const ytpl = require('ytpl');
-const stringSimilarity = require('string-similarity');
 const fs = require('fs');
 const chalk = require('chalk');
 const convert = require('convert-seconds');
@@ -148,17 +147,16 @@ module.exports = {
 	},
 
 	async getSong(message, args, playlistSongs) {
-		let videoId = 'Rick rolled'
+		let videoId = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstleyVEVO&ab'
 		if (!playlistSongs.length) {
 			currentQuery = args.slice(1, args.length + 1).join([' ']);
 			if (!currentQuery.startsWith('http')) {
 				console.log(`${chalk.yellow(`${message.author.username}`)} tried to query "${chalk.cyan(currentQuery)}"`);
 				const results = await ytsr(currentQuery, {limit: 1, pages: 1});
-				videoId = results.items[0].id;
-				let itemsIndex = 1;
-				while (!videoId) {
-					videoId = results.items[itemsIndex].id;
-					itemsIndex++;
+				try {	
+					videoId = results.items[0].id;
+				} catch {
+					console.log('no results found for query.')
 				}
 			} else {
 				videoId = args[1]
@@ -225,7 +223,7 @@ module.exports = {
 					serverQueue.songs.push(song);
 				}
 				if (!message.client.config.silent) {
-					await message.channel.send(`**${song.title}** has been added to the queue! :monkey_face: :thumbup:`);
+					await message.channel.send(`**${song.title}** has been added to the queue! :monkey_face:`);
 				} else {
 					message.react('➕');
 				}
@@ -233,7 +231,7 @@ module.exports = {
 			} else {
 				serverQueue.songs = serverQueue.songs.concat(playlistSongs);
 				if (!message.client.config.silent) {
-					await message.channel.send(`The **${args[2]}** playlist has been added to the queue! :monkey_face: :thumbup:`);
+					await message.channel.send(`The **${args[2]}** playlist has been added to the queue! :monkey_face:`);
 				} else {
 					await message.react('➕');
 				}

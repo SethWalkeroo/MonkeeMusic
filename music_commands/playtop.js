@@ -1,9 +1,7 @@
 const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
-const stringSimilarity = require('string-similarity');
 const fs = require('fs');
 const chalk = require('chalk');
-const cacheLocation = '../MonkeeMusic/music_data/query_cache.json'
 const queueLimit = 250;
 
 module.exports = {
@@ -18,8 +16,6 @@ module.exports = {
 			const queue = message.client.queue;
 			const serverQueue = message.client.queue.get(message.guild.id);
 			const voiceChannel = message.member.voice.channel;
-			const queryData = fs.readFileSync(cacheLocation);
-			const playlistCache = await JSON.parse(queryData);
 
 			if (!serverQueue) return message.channel.send('You can only playtop when there are already songs in the queue! Use the normal play command instead.');
 			if (!serverQueue.songs.length) return message.channel.send('You can only playtop when there are already songs in the queue! Use the normal play command instead.');
@@ -56,7 +52,7 @@ module.exports = {
 				console.log(`${message.author.username} tried to get a playlist`);
 			}
 			
-			const song = await this.getSong(message, args, playlistSongs, playlistCache);
+			const song = await this.getSong(message, args, playlistSongs);
 			this.checkQueue(message, args, song, voiceChannel, queue, queueLimit, serverQueue, playlistSongs);
 		} catch (error) {
 			console.log(error);
@@ -95,85 +91,32 @@ module.exports = {
 		}
 	},
 
-	async getSong(message, args, playlistSongs, playlistCache) {
-		let song = 0;
+	async getSong(message, args, playlistSongs) {
+		let videoId = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstleyVEVO&ab'
 		if (!playlistSongs.length) {
-			let firstLetter = null;
-			let currentQuery = args.slice(1, args.length + 1).join([' ']); 
-			if (currentQuery.length) {
-				firstLetter = currentQuery[0].toUpperCase();
-				if (playlistCache[`${firstLetter}`]) {
-					for (previousQuery of playlistCache[`${firstLetter}`]) {
-						if (stringSimilarity.compareTwoStrings(previousQuery.query, currentQuery) >= 0.70) {
-							console.log(chalk.green(`MATCHING QUERY FOUND! for ${chalk.yellow(currentQuery)}`));
-							song = {
-								title: previousQuery.title,
-								channel: previousQuery.channel,
-								thumbnail: previousQuery.thumbnail,
-								url: previousQuery.url,
-								duration: previousQuery.duration
-							};
-							playlistCache[`${firstLetter}`].push(song);
-							break;
-						}
-					}
-				} else {
-					playlistCache[`${firstLetter}`] = [];
-				}
-				if (!song) {
-					let videoId = args[1];
-					if (!playlistSongs.length) {
-						if (!videoId.startsWith('https://')) {
-							if (args.length > 2) {
-								currentQuery = args.slice(1, args.length + 1).join([' ']); 
-							} else {
-								currentQuery = args[1];
-							}
-							console.log(`${chalk.yellow(`${message.author.username}`)} tried to query "${chalk.cyan(currentQuery)}"`);
-							
-							const results = await ytsr(currentQuery, {limit: 1, pages: 1});
-							if (!results.items.length) {
-								return 0;
-							}
-							videoId = results.items[0].id;
-							let itemsIndex = 1;
-							while (!videoId) {
-								videoId = results.items[itemsIndex].id;
-								itemsIndex++;
-							}
-						}
-					}
-					const songInfo = await ytdl.getInfo(videoId);
-					song = {
-						query: currentQuery,
-						title: songInfo.videoDetails.title,
-						channel: songInfo.videoDetails.author.name,
-						thumbnail: songInfo.videoDetails.thumbnails[0].url,
-						url: songInfo.videoDetails.video_url,
-						duration: songInfo.videoDetails.lengthSeconds
-					};
-					playlistCache[`${firstLetter}`].push(song);
-					const data = JSON.stringify(playlistCache, null, 2);
-					fs.writeFile(cacheLocation, data, (err) => {
-						if (err) throw err;
-						console.log(`
-${chalk.magenta('NEW QUERY ADDED!')}
-QUERY: ${chalk.cyan(`${currentQuery}`)}
-						`);
-					});
+			currentQuery = args.slice(1, args.length + 1).join([' ']);
+			if (!currentQuery.startsWith('http')) {
+				console.log(`${chalk.yellow(`${message.author.username}`)} tried to query "${chalk.cyan(currentQuery)}"`);
+				const results = await ytsr(currentQuery, {limit: 1, pages: 1});
+				try {	
+					videoId = results.items[0].id;
+				} catch {
+					console.log('no results found for query.')
 				}
 			} else {
-				const songInfo = await ytdl.getInfo(videoId);
-				song = {
-					title: songInfo.videoDetails.title,
-					channel: songInfo.videoDetails.author.name,
-					thumbnail: songInfo.videoDetails.thumbnails[0].url,
-					url: songInfo.videoDetails.video_url,
-					duration: songInfo.videoDetails.lengthSeconds
-				};
+				videoId = args[1]
 			}
 		}
-		return song;
+		songInfo = await ytdl.getInfo(videoId);
+		song = {
+			title: songInfo.videoDetails.title,
+			channel: songInfo.videoDetails.author.name,
+			thumbnail: songInfo.videoDetails.thumbnails[0].url,
+			url: songInfo.videoDetails.video_url,
+			duration: songInfo.videoDetails.lengthSeconds,
+			isLivestream: songInfo.videoDetails.isLive
+		};
+		return song
 	},
 
 	async checkQueue(message, args, song, voiceChannel, queue, queueLimit, serverQueue, playlistSongs) {
@@ -225,11 +168,11 @@ QUERY: ${chalk.cyan(`${currentQuery}`)}
 					delete serverQueue.songs[0];
 					serverQueue.songs.shift();
 					serverQueue.songs.unshift(currentSong, song);
-					return await message.channel.send(`**${song.title}** has been added to the queue! :monkey_face: :thumbup:`);
+					return await message.channel.send(`**${song.title}** has been added to the queue! :monkey_face:`);
 				}
 			} else {
 				serverQueue.songs = serverQueue.songs.concat(playlistSongs);
-				return await message.channel.send(`The **${args[2]}** playlist has been added to the queue! :monkey_face: :thumbup:`);
+				return await message.channel.send(`The **${args[2]}** playlist has been added to the queue! :monkey_face:`);
 			}
 
 		}
