@@ -26,6 +26,7 @@ module.exports = {
 			}
 			count += 1;
 		}
+
 		let backticks = '```';
 		if (totalLength < 2000) {
 			message.channel.send(`${backticks}${result.join('\r\n')}${backticks}`);
@@ -33,7 +34,11 @@ module.exports = {
 			beginningOfQueue = Math.floor(result.length / 3)
 			firstHalf = result.slice(0, beginningOfQueue);
 			firstHalf.push(`And about ${result.length - beginningOfQueue} more songs in queue...`);
-			message.channel.send(`${backticks}${firstHalf.join('\r\n')}${backticks}`);
+			try {
+				return await message.channel.send(`${backticks}${firstHalf.join('\r\n')}${backticks}`);
+			} catch {
+				return message.channel.send(`The queue is gigantic and I am not smart enough to solve this problem at the moment.\nYou can complain on the Discord server and hopefully I will fix this soon.`);
+			}
 		}
 	},
 };

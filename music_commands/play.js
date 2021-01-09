@@ -74,7 +74,7 @@ module.exports = {
 							playlistSongs.push(constructPlaylistSong);
 						}
 					} else {
-						message.channel.send('Sorry, it seems like you entered an invalid playlist url!')
+						return message.channel.send('Sorry, it seems like you entered an invalid playlist url!')
 					}
 			}
 			const song = await this.getSong(message, args, playlistSongs);
